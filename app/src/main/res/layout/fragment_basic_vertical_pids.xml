@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@id/guideline_top"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/line_termination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Toward:  Zhujiang Swimming Pool" />
+
+    <TextView
+        android:id="@+id/line_name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:paddingTop="6dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+        android:textSize="44sp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_top"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guideline_line_name"
+        app:layout_constraintTop_toBottomOf="@id/line_termination"
+        tools:text="36" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_line_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.36" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="20dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/line_name"
+        app:layout_constraintLeft_toLeftOf="@id/guideline_line_name"
+        app:layout_constraintTop_toTopOf="@id/line_name" />
+
+    <TextView
+        android:id="@+id/line_next_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        app:layout_constraintLeft_toRightOf="@id/guideline_line_name"
+        app:layout_constraintTop_toTopOf="@id/line_name"
+        tools:text="@string/next_station" />
+
+    <TextView
+        android:id="@+id/line_next_station"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_top"
+        app:layout_constraintLeft_toLeftOf="@id/line_next_tag"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line_next_tag"
+        tools:text="小北花圈" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/line_station_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_top"
+        tools:listitem="@layout/item_station_basic" />
+</androidx.constraintlayout.widget.ConstraintLayout>

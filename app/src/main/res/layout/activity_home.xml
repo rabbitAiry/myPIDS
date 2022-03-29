@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/home_guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <EditText
+        android:id="@+id/home_search_edit"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:hint="搜索线路"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_guideline_top"/>
+
+    <Button
+        android:id="@+id/home_search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:text="搜索"
+        app:layout_constraintBottom_toBottomOf="@id/home_search_edit"
+        app:layout_constraintLeft_toRightOf="@id/home_search_edit"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginHorizontal="30dp"
+        app:layout_constraintTop_toBottomOf="@id/home_search_edit"
+        app:cardCornerRadius="10dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <View
+                android:id="@+id/home_selected_background"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/design_default_color_secondary"/>
+            <TextView
+                android:id="@+id/home_selected_line_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                tools:text="36"
+                android:layout_marginLeft="12dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"/>
+            <TextView
+                android:id="@+id/home_selected_line_toward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="开往：珠江泳场"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:layout_constraintLeft_toLeftOf="@id/home_selected_line_name"
+                app:layout_constraintTop_toBottomOf="@id/home_selected_line_name"/>
+            <Button
+                android:id="@+id/home_selected_start_pids_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="启动pids"
+                app:layout_constraintTop_toBottomOf="@id/home_selected_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+            <TextView
+                android:id="@+id/home_selected_hint_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                app:layout_constraintTop_toBottomOf="@id/home_selected_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/home_selected_start_pids_button"
+                tools:text="正在获取最近的位置"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
