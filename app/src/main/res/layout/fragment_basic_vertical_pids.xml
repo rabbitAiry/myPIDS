@@ -21,7 +21,7 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Toward:  Zhujiang Swimming Pool" />
+        tools:text="开往： 珠江泳场" />
 
     <TextView
         android:id="@+id/line_name"
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.36" />
+        app:layout_constraintGuide_percent="0.4" />
 
     <View
         android:layout_width="1dp"
@@ -58,10 +58,11 @@
         android:id="@+id/line_next_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="6dp"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         app:layout_constraintLeft_toRightOf="@id/guideline_line_name"
-        app:layout_constraintTop_toTopOf="@id/line_name"
+        app:layout_constraintTop_toBottomOf="@id/line_termination"
         tools:text="@string/next_station" />
 
     <TextView
@@ -75,14 +76,14 @@
         app:layout_constraintLeft_toLeftOf="@id/line_next_tag"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line_next_tag"
-        tools:text="小北花圈" />
+        tools:text="怡安花园晴朗居（素社）" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="0.25" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/line_station_list"

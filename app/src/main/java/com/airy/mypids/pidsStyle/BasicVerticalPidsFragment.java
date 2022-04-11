@@ -13,10 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.airy.mypids.R;
 import com.airy.mypids.adapter.BasicStationAdapter;
 import com.airy.mypids.object.Line;
-import com.airy.mypids.data.StationDataRepo;
+import com.airy.mypids.utils.LineUtil;
 import com.airy.mypids.databinding.FragmentBasicVerticalPidsBinding;
 
 public class BasicVerticalPidsFragment extends Fragment {
@@ -35,7 +34,7 @@ public class BasicVerticalPidsFragment extends Fragment {
         return false;
     });
 
-    private StationDataRepo repo;
+    private LineUtil repo;
     private BasicStationAdapter adapter;
     private Line line;
     private Context context;
@@ -48,7 +47,6 @@ public class BasicVerticalPidsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentBasicVerticalPidsBinding.inflate(inflater, container, false);
-        repo = StationDataRepo.getInstance();
         context = getContext();
         inflateLineData();
         return binding.getRoot();
@@ -70,8 +68,6 @@ public class BasicVerticalPidsFragment extends Fragment {
     }
 
     private void setText(){
-        // error: 当退出pids页面后，handler仍在继续工作，导致了数据更新在null上
-//        binding.lineName.setEllipsize();
         binding.lineName.setText(line.lineName);
         binding.lineNextTag.setText(line.getTextOfNextStation());
         binding.lineTermination.setText(line.getTerminalDesc());
