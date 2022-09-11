@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="40dp"
+        android:background="@color/light_blue_500">
+
+        <TextView
+            android:id="@+id/text_line_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+            tools:text="285路" />
+
+        <TextView
+            android:id="@+id/text_line_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            tools:text="云台花园总站方向" />
+
+    </LinearLayout>
+
+    <com.airy.mypids.pids.vertical_style.MarqueeTextView
+        android:id="@+id/text_next_station"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/light_blue_400"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="下一站：江湾桥脚" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_stations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_station_basic"/>
+
+        <com.airy.mypids.views.ConsumeTouchView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+</LinearLayout>

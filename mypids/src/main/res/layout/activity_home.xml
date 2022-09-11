@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:paddingBottom="20dp"
+            android:text="配置我的pids"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
+            app:layout_constraintLeft_toLeftOf="@id/toolbar"
+            app:layout_constraintRight_toRightOf="@id/toolbar"
+            app:layout_constraintTop_toTopOf="@id/toolbar" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="42dp" />
+
+            <androidx.cardview.widget.CardView style="@style/home_card">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/home_card_title"
+                        android:text="pids风格" />
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:checkedButton="@id/radio_button_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/radio_button"
+                            android:layout_marginRight="10dp"
+                            android:text="选择风格：" />
+
+                        <RadioButton
+                            android:id="@+id/radio_button_horizontal"
+                            style="@style/radio_button"
+                            android:text="横屏风格" />
+
+                        <RadioButton
+                            android:id="@+id/radio_button_vertical"
+                            style="@style/radio_button"
+                            android:text="竖屏风格" />
+
+                    </RadioGroup>
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView style="@style/home_card">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/home_card_title"
+                        android:text="线路" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_search_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/edit_city_search"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="广州"
+                            android:hint="城市" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="市" />
+
+                        <EditText
+                            android:id="@+id/edit_line_search"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="24"
+                            android:hint="线路" />
+
+                        <Button
+                            android:id="@+id/button_line_search"
+                            style="@style/home_card_button"
+                            android:layout_marginLeft="12dp"
+                            android:text="搜索" />
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/list_search_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_margin="10dp"
+                        android:visibility="visible" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_selected_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/outline_rectangle"
+                        android:orientation="horizontal"
+                        android:padding="10dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/text_line_description"
+                            android:layout_width="0dp"
+                            android:layout_height="28dp"
+                            android:layout_weight="1"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                            tools:text="36\t珠江泳场方向" />
+
+                        <ImageButton
+                            android:id="@+id/button_clear_line"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/ic_baseline_cancel_24" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_select_station"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/outline_rectangle"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="10dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="选择所在站点：" />
+
+                        <Button
+                            android:id="@+id/button_select_station"
+                            style="@style/home_card_button"
+                            tools:text="大沙头游船码头" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/button_start_pids"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_margin="20dp"
+                android:text="启动pids" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

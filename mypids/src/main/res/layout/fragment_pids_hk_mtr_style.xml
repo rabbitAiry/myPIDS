@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="2dp"
+            android:orientation="vertical"
+            android:background="@drawable/rect_station_platform_tips_bg">
+
+            <TextView
+                android:id="@+id/text_exit_chinese"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintVertical_chainStyle="packed"
+                android:text="请在这边落车"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+            <TextView
+                android:id="@+id/text_exit_english"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintVertical_chainStyle="packed"
+                android:text="Please exit this side"
+                android:layout_marginTop="-2dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:visibility="invisible">
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="8dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rect_line"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="西铁线"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="West Rail Line"
+                    android:layout_marginTop="-2dp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:textSize="8sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/text_station_chinese_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="尖东"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+            android:textColor="@color/deep_blue_1000"
+            android:gravity="center"
+            android:fontFamily="serif"
+            android:textStyle="bold"/>
+
+        <View
+            android:id="@+id/view_station_light"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:background="@drawable/oval_station" />
+
+        <TextView
+            android:id="@+id/text_station_english_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="East Tsim Sha Tsui"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+            android:textColor="@color/deep_blue_1000"
+            android:gravity="center"
+            android:textStyle="bold"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="请小心月台空隙 \t Please mind the gap"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textColor="@color/deep_blue_1000"
+        android:background="@color/yellow_400"/>
+</LinearLayout>

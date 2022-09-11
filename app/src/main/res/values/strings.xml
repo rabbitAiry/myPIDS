@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">myPIDS</string>
-    <string name="next_station">下一站：</string>
-    <string name="bound_for">%s 方向</string>
-</resources>
