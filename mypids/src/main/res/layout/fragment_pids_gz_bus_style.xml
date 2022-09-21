@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
@@ -11,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginHorizontal="4dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"/>
     
     <LinearLayout
+        android:id="@+id/layout_station_arrived"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -23,7 +24,6 @@
         android:orientation="vertical">
         
         <LinearLayout
-            android:id="@+id/layout_station_arrived"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -49,7 +49,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_station_next"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -57,6 +56,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/text_next_station_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -93,15 +93,14 @@
             android:layout_weight="3"
             android:gravity="center"
             tools:text="777"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            android:maxLines="1"
+            style="@style/gz_bus_style_bottom_text"
             android:textColor="@color/golden_400"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="本车从"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            style="@style/gz_bus_style_bottom_text"
             android:textColor="@color/white"/>
 
         <TextView
@@ -109,15 +108,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="天河城总站"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            style="@style/gz_bus_style_bottom_text"
             android:textColor="@color/golden_400"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="开往"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            style="@style/gz_bus_style_bottom_text"
             android:textColor="@color/white"/>
 
         <TextView
@@ -126,7 +124,7 @@
             android:layout_height="match_parent"
             android:text="珠江新城总站①"
             android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            style="@style/gz_bus_style_bottom_text"
             android:textColor="@color/golden_400"/>
 
         <Space

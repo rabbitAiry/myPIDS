@@ -52,12 +52,15 @@
                         style="@style/home_card_title"
                         android:text="pids风格" />
 
+<!--                    暂时用不上， 所以隐藏了-->
                     <RadioGroup
+                        android:id="@+id/radio_group_pids_style"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
                         android:checkedButton="@id/radio_button_horizontal"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             style="@style/radio_button"
@@ -75,6 +78,13 @@
                             android:text="竖屏风格" />
 
                     </RadioGroup>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/list_pids"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/outline_rectangle"/>
 
                 </LinearLayout>
 
@@ -117,7 +127,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="24"
+                            android:text="778"
                             android:hint="线路" />
 
                         <Button

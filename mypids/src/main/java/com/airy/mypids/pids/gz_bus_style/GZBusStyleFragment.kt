@@ -18,17 +18,17 @@ class GZBusStyleFragment(context: Context, private val line: Line) : BasePidsFra
     override fun pidsStationArrived() {
         status = PidsStatus.BUS_STATION_ARRIVED
         binding.layoutStationArrived.visibility = View.VISIBLE
-        binding.layoutStationNext.visibility = View.VISIBLE
         binding.listStations.visibility = View.GONE
         binding.textCurrStation.text = line.getCurrStationName()
-        binding.textNextStation.text = line.getStation(line.currStationIdx+1).name
+        if(line.isLastStation()){
+            binding.textNextStation.text = ""
+            binding.textNextStationTag.text = "这是本次列车的终点站"
+        }else binding.textNextStation.text = line.getStation(line.currStationIdx+1).name
     }
 
     override fun pidsRunning() {
         status = PidsStatus.BUS_RUNNING
-        nextStation()
         binding.layoutStationArrived.visibility = View.GONE
-        binding.layoutStationNext.visibility = View.GONE
         binding.listStations.visibility = View.VISIBLE
     }
 
@@ -37,10 +37,11 @@ class GZBusStyleFragment(context: Context, private val line: Line) : BasePidsFra
     }
 
     override fun nextStation() {
+        if(line.isLastStation())return
         line.nextStation()
         binding.listStations.nextStation()
         binding.textCurrStation.text = line.getCurrStationName()
-        binding.textNextStation.text = line.getStation(line.currStationIdx+1).name
+        binding.textNextStation.text = if(line.isLastStation()) "已到达本次旅程的" else line.getStation(line.currStationIdx+1).name
     }
 
     override fun onCreateView(
@@ -49,7 +50,10 @@ class GZBusStyleFragment(context: Context, private val line: Line) : BasePidsFra
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPidsGzBusStyleBinding.inflate(inflater, container, false)
-        binding.listStations.post { binding.listStations.line = line }
+        binding.listStations.post {
+            val layout = binding.listStations
+            layout.line = line
+        }
         binding.textLineName.text = line.getShortLineName()
         binding.textStartStation.text = line.getFirstStation().name
         binding.textEndStation.text = line.getLastStation().name
@@ -59,7 +63,7 @@ class GZBusStyleFragment(context: Context, private val line: Line) : BasePidsFra
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
         handler.removeCallbacksAndMessages(null)
+        _binding = null
     }
 }

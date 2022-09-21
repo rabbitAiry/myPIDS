@@ -48,6 +48,7 @@ data class Line(
     fun getStation(idx: Int) = stations[idx]
     fun getLastStationIdx() = stations.size-1
     fun isLastStation() = currStationIdx==getLastStationIdx()
+    fun getLineStationCount() = stations.size
 
     /**
      * 切换到下一站，并且返回currStationIdx

@@ -3,6 +3,7 @@ package com.airy.mypids.pids.vertical_style
 import android.content.Context
 import android.os.Bundle
 import android.os.Message
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +15,17 @@ import com.airy.mypids.objects.Line
 import com.airy.mypids.pids.BasePidsFragment
 import com.airy.mypids.pids.PidsStatus
 
-const val PIDS_SWITCH = 1
+const val TAG = "VerticalPidsFragment"
 
 class VerticalPidsFragment(context: Context, private val line: Line) : BasePidsFragment(context) {
     override fun getPidsStyleName(): String = "基础竖向风格"
     private var _binding: FragmentPidsVerticalStyleBinding? = null
     private val binding get() = _binding!!
     private val adapter = VerticalPidsAdapter(line.getStationNames(), context, line.currStationIdx)
+    private var isLastStation = false
+    private var waitRunningStart = false
 
     override fun pidsStationArrived() {
-        handler.removeMessages(PIDS_SWITCH)
         status = PidsStatus.BUS_STATION_ARRIVED
         adapter.stationArrived()
         val text = if (line.isLastStation())
@@ -34,22 +36,26 @@ class VerticalPidsFragment(context: Context, private val line: Line) : BasePidsF
     }
 
     override fun pidsRunning() {
-        if (status == PidsStatus.BUS_RUNNING || line.isLastStation()) return
-        if (status == PidsStatus.BUS_STATION_ARRIVED) {
-            status = PidsStatus.BUS_RUNNING_START
-            adapter.busRunning()
-            nextStation()
-            setNextStationText("尊老爱幼是中华民族的传统美德，请您为有需要的乘客让座，谢谢！")
-            val message = Message.obtain(handler) {
-                pidsRunning()
-            }
-            message.what = PIDS_SWITCH
-            handler.sendMessageDelayed(message, 12000)
-            return
+        if(isLastStation)return
+        else if (status == PidsStatus.BUS_STATION_ARRIVED) {
+            pidsRunningStart()
+        }else{
+            if (line.isLastStation()) isLastStation = true
+            waitRunningStart = false
+            status = PidsStatus.BUS_RUNNING
+            setNextStationText(StringBuilder("下一站：").append(line.getCurrStationName()).toString())
         }
-        handler.removeMessages(PIDS_SWITCH)
-        status = PidsStatus.BUS_RUNNING
-        setNextStationText(StringBuilder("下一站：").append(line.getCurrStationName()).toString())
+    }
+
+    private fun pidsRunningStart() {
+        status = PidsStatus.BUS_RUNNING_START
+        waitRunningStart = true
+        adapter.busRunning()
+        setNextStationText("尊老爱幼是中华民族的传统美德，请您为有需要的乘客让座，谢谢！")
+        handler.postDelayed({
+            if(status != PidsStatus.BUS_RUNNING_START)return@postDelayed
+            pidsRunning()
+        }, 16000)
     }
 
     override fun pidsRunningArriveSoon() {
@@ -57,15 +63,12 @@ class VerticalPidsFragment(context: Context, private val line: Line) : BasePidsF
     }
 
     override fun nextStation() {
-        handler.removeMessages(PIDS_SWITCH)
+        Log.d(TAG, "nextStation: ")
         if (line.isLastStation()) return
         binding.listStations.smoothScrollToPosition(line.nextStation() + 6)
         adapter.nextStation()
         if (status == PidsStatus.BUS_STATION_ARRIVED) pidsStationArrived()
-        else {
-            status = PidsStatus.BUS_RUNNING_START
-            pidsRunning()
-        }
+        else if (status == PidsStatus.BUS_RUNNING) pidsRunning()
     }
 
     override fun onCreateView(
@@ -75,15 +78,15 @@ class VerticalPidsFragment(context: Context, private val line: Line) : BasePidsF
     ): View {
         _binding = FragmentPidsVerticalStyleBinding.inflate(inflater, container, false)
         binding.listStations.adapter = adapter
-        binding.listStations.layoutManager = object:LinearLayoutManager(context){
+        binding.listStations.layoutManager = object : LinearLayoutManager(context) {
             override fun smoothScrollToPosition(
                 recyclerView: RecyclerView?,
                 state: RecyclerView.State?,
                 position: Int
             ) {
-                val scroller = object: LinearSmoothScroller(context){
+                val scroller = object : LinearSmoothScroller(context) {
                     override fun calculateTimeForScrolling(dx: Int): Int =
-                        super.calculateTimeForScrolling(dx)*20
+                        super.calculateTimeForScrolling(dx) * 20
                 }
                 scroller.targetPosition = position
                 startSmoothScroll(scroller)
@@ -104,6 +107,8 @@ class VerticalPidsFragment(context: Context, private val line: Line) : BasePidsF
     }
 
     private fun setNextStationText(text: String) {
-        binding.textNextStation.setText(text)
+        binding.textNextStation.post{
+            binding.textNextStation.setText(text)
+        }
     }
 }

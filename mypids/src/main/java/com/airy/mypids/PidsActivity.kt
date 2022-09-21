@@ -5,13 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.airy.mypids.databinding.ActivityPidsBinding
 import com.airy.mypids.objects.Line
 import com.airy.mypids.pids.BasePidsFragment
+import com.airy.mypids.pids.PidsManager
+import com.airy.mypids.pids.PidsStatus
 import com.airy.mypids.pids.gz_bus_style.GZBusStyleFragment
 import com.airy.mypids.pids.vertical_style.VerticalPidsFragment
 import com.airy.mypids.views.WindowLayout
+import java.lang.Exception
 
 class PidsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPidsBinding
@@ -25,13 +29,17 @@ class PidsActivity : AppCompatActivity() {
         supportActionBar?.hide()
         binding.pidsProgressBar.visibility = View.VISIBLE
 
-        intent?.let{
-            val line = it.getParcelableExtra<Line>("Line")!!
-            setFullScreen(false)
-            pidsFragment = VerticalPidsFragment(this, line)
-//            pidsFragment = GZBusStyleFragment(this, line)
-            setPidsFragment()
-            setPidsHelperWindow()
+        try {
+            intent!!.let{
+                val line = it.getParcelableExtra<Line>("Line")!!
+                val styleText = it.getStringExtra("Style")!!
+                setFullScreen(PidsManager.getIsHorizontal(styleText)!!)
+                pidsFragment = PidsManager.getPidsFragment(styleText, this, line)!!
+                setPidsFragment()
+                setPidsHelperWindow()
+            }
+        }catch (e: Exception){
+            Toast.makeText(this, "打开时出错", Toast.LENGTH_SHORT).show()
         }
 
         binding.pidsProgressBar.visibility = View.INVISIBLE
@@ -41,6 +49,9 @@ class PidsActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().add(binding.root.id, pidsFragment).commit()
     }
 
+    /**
+     * app内悬浮窗
+     */
     private fun setPidsHelperWindow(){
         windowView = layoutInflater.inflate(R.layout.window_helper, null)
         val buttonNextStation: Button = windowView.findViewById(R.id.button_next_station)
@@ -71,10 +82,13 @@ class PidsActivity : AppCompatActivity() {
     }
 
     private fun stationArrived(){
+        if(pidsFragment.status == PidsStatus.BUS_STATION_ARRIVED)return
         pidsFragment.pidsStationArrived()
     }
 
     private fun busRun(){
+        if(pidsFragment.status in arrayOf(PidsStatus.BUS_RUNNING, PidsStatus.BUS_RUNNING_START, PidsStatus.BUS_RUNNING_REPORTING, PidsStatus.BUS_ARRIVING_SOON))return
+        nextStation()
         pidsFragment.pidsRunning()
     }
 

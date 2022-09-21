@@ -1,9 +1,9 @@
 package com.airy.mypids.pids.vertical_style
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.airy.mypids.R
-import com.airy.mypids.utils.ColorUtil
+import com.airy.mypids.utils.ResUtil
 
 class VerticalPidsAdapter(
     var stationNames: List<String>,
@@ -39,8 +39,8 @@ class VerticalPidsAdapter(
             if (pos < currStationIdx || (pos == currStationIdx && (shiningOn || !statusRunning))) R.drawable.station_arrived_round else R.drawable.station_unarrive_round
         holder.stationStatus.background = AppCompatResources.getDrawable(context, shapeId)
         holder.stationName.text = stationNames[pos]
-        val backgroundColorId = if(pos == currStationIdx) R.color.light_blue_400 else R.color.white
-        holder.stationName.setBackgroundColor(ColorUtil.getResColor(backgroundColorId, context))
+        val backgroundColorId = if(pos == currStationIdx) R.color.light_blue_100 else R.color.white
+        holder.itemView.setBackgroundColor(ResUtil.getResColor(backgroundColorId, context))
     }
 
     override fun getItemCount(): Int = stationNames.size
@@ -49,20 +49,20 @@ class VerticalPidsAdapter(
         currStationIdx++
         handler.removeCallbacksAndMessages(null)
         notifyItemChanged(currStationIdx-1)
-        shine()
+        if(statusRunning)shine()
     }
 
     fun stationArrived(){
+        Log.d(TAG, "stationArrived(adapter): ")
         statusRunning = false
         notifyItemChanged(currStationIdx)
         handler.removeCallbacksAndMessages(null)
     }
 
-    /**
-     * 在调用这个方法之前，会先调用nextStation()
-     */
     fun busRunning(){
+        Log.d(TAG, "busRunning(adapter): ")
         statusRunning = true
+        shine()
     }
 
     private fun shine(){
