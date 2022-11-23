@@ -7,41 +7,33 @@ import android.view.View
 import android.view.ViewGroup
 import com.airy.mypids.databinding.FragmentPidsGzBusStyleBinding
 import com.airy.mypids.objects.Line
-import com.airy.mypids.pids.BasePidsFragment
-import com.airy.mypids.pids.PidsStatus
+import com.airy.mypids.pids.RunStopPostStartPids
 
-class GZBusStyleFragment(context: Context, private val line: Line) : BasePidsFragment(context) {
+class GZBusStyleFragment(context: Context, line: Line) : RunStopPostStartPids(context, line) {
     private var _binding: FragmentPidsGzBusStyleBinding? = null
     private val binding get() = _binding!!
     override fun getPidsStyleName(): String = "广州公交风格"
-
-    override fun pidsStationArrived() {
-        status = PidsStatus.BUS_STATION_ARRIVED
+    override fun displayStationArrived() {
         binding.layoutStationArrived.visibility = View.VISIBLE
         binding.listStations.visibility = View.GONE
-        binding.textCurrStation.text = line.getCurrStationName()
-        if(line.isLastStation()){
+        binding.textCurrStation.text = line.currStation.name
+        if (line.isLastStation) {
             binding.textNextStation.text = ""
             binding.textNextStationTag.text = "这是本次列车的终点站"
-        }else binding.textNextStation.text = line.getStation(line.currStationIdx+1).name
+        } else binding.textNextStation.text = line.getStation(line.currStationIdx + 1).name
     }
 
-    override fun pidsRunning() {
-        status = PidsStatus.BUS_RUNNING
+    // temporary return 0 since nothing to post
+    override fun displayRunningStart(): Long = 0
+
+    override fun displayRunning() {
         binding.layoutStationArrived.visibility = View.GONE
         binding.listStations.visibility = View.VISIBLE
     }
 
-    override fun pidsRunningArriveSoon() {
-        TODO("Not yet implemented")
-    }
-
-    override fun nextStation() {
-        if(line.isLastStation())return
-        line.nextStation()
-        binding.listStations.nextStation()
-        binding.textCurrStation.text = line.getCurrStationName()
-        binding.textNextStation.text = if(line.isLastStation()) "已到达本次旅程的" else line.getStation(line.currStationIdx+1).name
+    override fun displayNextStation() {
+//        binding.listStations.nextStation()
+        TODO("补充")
     }
 
     override fun onCreateView(
@@ -54,10 +46,10 @@ class GZBusStyleFragment(context: Context, private val line: Line) : BasePidsFra
             val layout = binding.listStations
             layout.line = line
         }
-        binding.textLineName.text = line.getShortLineName()
-        binding.textStartStation.text = line.getFirstStation().name
-        binding.textEndStation.text = line.getLastStation().name
-        pidsStationArrived()
+        binding.textLineName.text = line.briefLineName
+        binding.textStartStation.text = line.firstStation.name
+        binding.textEndStation.text = line.lastStation.name
+        pidsStationArrived(true)
         return binding.root
     }
 

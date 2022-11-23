@@ -2,4 +2,7 @@
     <string name="app_name">myPIDS</string>
     <string name="next_station">下一站：</string>
     <string name="bound_for">%s 方向</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="configure_my_pids">配置我的pids</string>
+    <string name="pids_style">pids风格</string>
 </resources>

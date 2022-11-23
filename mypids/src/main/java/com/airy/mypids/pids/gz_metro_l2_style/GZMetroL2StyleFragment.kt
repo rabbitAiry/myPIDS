@@ -5,16 +5,11 @@ import com.airy.mypids.pids.BasePidsFragment
 
 class GZMetroL2StyleFragment(context: Context): BasePidsFragment(context) {
     override fun getPidsStyleName(): String = "广州地铁二号线风格"
-
-    override fun pidsStationArrived() {
+    override fun pidsStationArrived(isStopped: Boolean) {
         TODO("Not yet implemented")
     }
 
     override fun pidsRunning() {
-        TODO("Not yet implemented")
-    }
-
-    override fun pidsRunningArriveSoon() {
         TODO("Not yet implemented")
     }
 

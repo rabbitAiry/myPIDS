@@ -13,7 +13,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/mypids" />
-            <option value="$PROJECT_DIR$/mypidshelper" />
           </set>
         </option>
       </GradleProjectSettings>

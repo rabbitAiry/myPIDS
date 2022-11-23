@@ -1,8 +1,10 @@
 package com.airy.mypids.utils
 
+import android.util.Log
 import com.airy.mypids.objects.Line
 import com.airy.mypids.objects.Station
 import com.baidu.mapapi.search.busline.BusLineResult
+import java.util.Collections
 
 object LineUtil {
     val fakeLine1: Line = Line(
@@ -47,11 +49,23 @@ object LineUtil {
         )
     }
 
-    private fun splitBaiduLineName(origin: String): String = splitBefore(origin, '(')
+    /**
+     * 将线路掰成两半
+     * 第一半的站数可能会比第二半多一个
+     */
+    fun splitLineToTwoPart(line: Line): Array<Line>{
+        val arr = arrayOf(line.copy(), line.copy())
+        val cnt = line.stations.size
+        arr[0].stations = listCopyInRange(line.stations, 0, (cnt+1)/2)
+        arr[1].stations = listCopyInRange(line.stations, (cnt+1)/2, cnt)
+        return arr
+    }
 
-    private fun splitBaiduLineDirection(origin: String): String = splitBefore(origin, '方')
+    private fun splitBaiduLineName(origin: String): String = splitTextBefore(origin, '(')
 
-    private fun splitBefore(origin: String, target: Char): String {
+    private fun splitBaiduLineDirection(origin: String): String = splitTextBefore(origin, '方')
+
+    private fun splitTextBefore(origin: String, target: Char): String {
         var end = 0
         for ((index, c) in origin.withIndex()) {
             if (c == target) {
@@ -60,5 +74,9 @@ object LineUtil {
             }
         }
         return origin.substring(0, end)
+    }
+
+    private fun <E> listCopyInRange(src: List<E>, from: Int, to: Int): List<E>{
+        TODO("待补充")
     }
 }

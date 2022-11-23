@@ -10,7 +10,7 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import com.airy.mypids.objects.Line
 
-class LineMapLinearLayout @JvmOverloads constructor(
+class LineMapRowLayout @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
@@ -26,13 +26,13 @@ class LineMapLinearLayout @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
         line?.let {
-            val perWidth = (width - marginLeft - marginRight).toFloat() / it.getLineStationCount()
+            val perWidth = (width - marginLeft - marginRight).toFloat() / it.stationCount
             textSize = getTextSize(perWidth * 3 / 4)
         }
     }
 
     private fun initTextViewArray(line: Line) {
-        val n = line.getLineStationCount()
+        val n = line.stationCount
         val perWidth = width.toFloat() / n
         textSize = getTextSize(perWidth * 3 / 4)
         for (i in 0 until n) {
@@ -41,9 +41,9 @@ class LineMapLinearLayout @JvmOverloads constructor(
                 isFirst = i == 0,
                 isEnd = i == n - 1,
                 text = line.getStation(i).name,
-                status = if (i > line.currStationIdx) Status.NOT_ARRIVE
-                else if (i == line.currStationIdx) Status.CURR
-                else Status.ARRIVED
+                status = if (i > line.currStationIdx) FlowingText.Status.NOT_ARRIVE
+                else if (i == line.currStationIdx) FlowingText.Status.CURR
+                else FlowingText.Status.ARRIVED
             )
             val params = LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
             params.weight = 1f
@@ -74,12 +74,8 @@ class LineMapLinearLayout @JvmOverloads constructor(
         line?.let {
             val child0 = get(it.currStationIdx - 1) as FlowingText
             val child1 = get(it.currStationIdx) as FlowingText
-            child0.status = Status.ARRIVED
-            child1.status = Status.CURR
+            child0.status = FlowingText.Status.ARRIVED
+            child1.status = FlowingText.Status.CURR
         }
-    }
-
-    enum class Status {
-        NOT_ARRIVE, CURR, ARRIVED
     }
 }

@@ -40,6 +40,11 @@ class MarqueeTextView @JvmOverloads constructor(
         }
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        cancelAnimation()
+    }
+
     private fun drawAllText(canvas: Canvas, x: Float, y: Float){
         canvas.drawText(text, 0, text.length, x, y, paint)
     }
@@ -72,7 +77,7 @@ class MarqueeTextView @JvmOverloads constructor(
         verticalAnimator = ValueAnimator.ofFloat(0f, mBaseline)
         verticalAnimator?.let{
             it.addListener(object:AnimatorListenerAdapter(){
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     status = Status.NO_ANIMATION
                     invalidate()
                 }

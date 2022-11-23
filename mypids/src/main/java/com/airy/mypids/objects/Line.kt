@@ -9,53 +9,16 @@ import java.util.*
 data class Line(
     val lineName: String,
     val directionName: String,
-    val stations: List<Station>
-) : Parcelable {
+    var stations: List<Station>,
+    var currStationIdx: Int = 0,
+) : Parcelable{
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.createTypedArrayList(Station)!!
+        parcel.createTypedArrayList(Station)!!,
+        parcel.readInt()
     ) {
         currStationIdx = parcel.readInt()
-    }
-
-    var currStationIdx = 0
-    fun getShortLineName(): String{
-        val name = lineName
-        val n = name.length
-        if(name[n-1] =='路'){
-            val builder = StringBuilder(name)
-            builder.deleteCharAt(n-1)
-            return builder.toString()
-        }
-        return name
-    }
-    fun getFirstStation() = stations[0]
-    fun getLastStation() = stations[stations.size - 1]
-    fun getLineDescription() =
-        StringBuilder().append(lineName).append(" ").append(directionName).append("方向").toString()
-
-    fun getStationNames(): List<String> {
-        val list = LinkedList<String>()
-        for (station in stations) list.add(station.name)
-        return list
-    }
-
-    /**
-     * 获取当前到站或者下一站
-     */
-    fun getCurrStationName() = stations[currStationIdx].name
-    fun getStation(idx: Int) = stations[idx]
-    fun getLastStationIdx() = stations.size-1
-    fun isLastStation() = currStationIdx==getLastStationIdx()
-    fun getLineStationCount() = stations.size
-
-    /**
-     * 切换到下一站，并且返回currStationIdx
-     */
-    fun nextStation(): Int {
-        if (currStationIdx + 1 < stations.size) currStationIdx++
-        return currStationIdx
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -77,5 +40,43 @@ data class Line(
         override fun newArray(size: Int): Array<Line?> {
             return arrayOfNulls(size)
         }
+    }
+
+    val firstStation get() = stations[0]
+    val lastStation get() = stations[stations.size - 1]
+    val currStation get() = stations[currStationIdx]
+    val lineDescription get() = "$lineName ${directionName}方向"
+    val isLastStation get() = currStationIdx==stations.size-1
+    val stationCount get() = stations.size
+    val briefLineName get() = run {
+        val name = lineName
+        val n = name.length
+        if(name[n-1] =='路'){
+            val builder = StringBuilder(name)
+            builder.deleteCharAt(n-1)
+            builder.toString()
+        }
+        name
+    }
+
+    val stationNames get() = run{
+        val list = LinkedList<String>()
+        for (station in stations) list.add(station.name)
+        list
+    }
+
+    fun getStation(idx: Int) = stations[idx]
+
+    fun setCurrStation(station: Station){
+        currStationIdx = stations.indexOf(station)
+    }
+
+
+    /**
+     * 切换到下一站，并且返回currStationIdx
+     */
+    fun nextStation(): Int {
+        if (currStationIdx + 1 < stations.size) currStationIdx++
+        return currStationIdx
     }
 }

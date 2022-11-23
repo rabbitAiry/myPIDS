@@ -11,10 +11,8 @@ import com.airy.mypids.databinding.ActivityPidsBinding
 import com.airy.mypids.objects.Line
 import com.airy.mypids.pids.BasePidsFragment
 import com.airy.mypids.pids.PidsManager
-import com.airy.mypids.pids.PidsStatus
-import com.airy.mypids.pids.gz_bus_style.GZBusStyleFragment
-import com.airy.mypids.pids.vertical_style.VerticalPidsFragment
-import com.airy.mypids.views.WindowLayout
+import com.airy.mypids.pids.BasePidsFragment.PidsStatus
+import com.airy.mypids.views.HelperLayout
 import java.lang.Exception
 
 class PidsActivity : AppCompatActivity() {
@@ -41,7 +39,6 @@ class PidsActivity : AppCompatActivity() {
         }catch (e: Exception){
             Toast.makeText(this, "打开时出错", Toast.LENGTH_SHORT).show()
         }
-
         binding.pidsProgressBar.visibility = View.INVISIBLE
     }
 
@@ -67,11 +64,12 @@ class PidsActivity : AppCompatActivity() {
             flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         }
         val manager = windowManager
-        val layout: WindowLayout = windowView.findViewById(R.id.window_layout)
+        val layout: HelperLayout = windowView.findViewById(R.id.window_layout)
         layout.setWindowParams(params, manager, windowView)
         manager.addView(windowView, params)
     }
 
+    @Suppress("DEPRECATION")
     private fun setFullScreen(landscape : Boolean){
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         if(landscape)requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;//强制为横屏
@@ -83,11 +81,11 @@ class PidsActivity : AppCompatActivity() {
 
     private fun stationArrived(){
         if(pidsFragment.status == PidsStatus.BUS_STATION_ARRIVED)return
-        pidsFragment.pidsStationArrived()
+        pidsFragment.pidsStationArrived(true)
     }
 
     private fun busRun(){
-        if(pidsFragment.status in arrayOf(PidsStatus.BUS_RUNNING, PidsStatus.BUS_RUNNING_START, PidsStatus.BUS_RUNNING_REPORTING, PidsStatus.BUS_ARRIVING_SOON))return
+        if(pidsFragment.status in arrayOf(PidsStatus.BUS_RUNNING, PidsStatus.BUS_RUNNING_START, PidsStatus.BUS_RUNNING_REPORTING))return
         nextStation()
         pidsFragment.pidsRunning()
     }

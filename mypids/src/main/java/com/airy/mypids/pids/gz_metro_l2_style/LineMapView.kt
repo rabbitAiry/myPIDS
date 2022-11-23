@@ -32,7 +32,7 @@ class LineMapView: View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         line?.let{
-            val perRowStationCnt = (it.getLineStationCount()+1)/2
+            val perRowStationCnt = (it.stationCount+1)/2
             val perLineWidth = (width.toFloat()-height/4-space)/(perRowStationCnt+1)
             val perHeight = height.toFloat()/4
 

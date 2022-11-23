@@ -11,6 +11,9 @@ object PidsManager {
         "广州公交风格" to PidsInfo(GZBusStyleFragment::class.java, true)
     )
 
+    /**
+     * list元素数量不能为0，否则会带来许多错误
+     */
     fun getPidsNameList() = ArrayList(pidsNameMap.keys)
 
     fun getPidsFragment(styleName: String, context: Context, line: Line): BasePidsFragment?{
