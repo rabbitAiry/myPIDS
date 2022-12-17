@@ -6,7 +6,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class Line(
+open class Line(
     val lineName: String,
     val directionName: String,
     var stations: List<Station>,
@@ -20,6 +20,8 @@ data class Line(
     ) {
         currStationIdx = parcel.readInt()
     }
+
+    constructor(l: Line) : this(l.lineName, l.directionName, l.stations, l.currStationIdx)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(lineName)
@@ -41,6 +43,8 @@ data class Line(
             return arrayOfNulls(size)
         }
     }
+
+    // -- Parcel part end --
 
     val firstStation get() = stations[0]
     val lastStation get() = stations[stations.size - 1]
@@ -65,16 +69,10 @@ data class Line(
         list
     }
 
-    fun getStation(idx: Int) = stations[idx]
-
     fun setCurrStation(station: Station){
         currStationIdx = stations.indexOf(station)
     }
 
-
-    /**
-     * 切换到下一站，并且返回currStationIdx
-     */
     fun nextStation(): Int {
         if (currStationIdx + 1 < stations.size) currStationIdx++
         return currStationIdx
