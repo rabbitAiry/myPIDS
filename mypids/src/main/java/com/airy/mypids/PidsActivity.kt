@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.airy.mypids.databinding.ActivityPidsBinding
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 import com.airy.mypids.pids.BasePidsFragment
 import com.airy.mypids.pids.PidsManager
 import com.airy.mypids.pids.BasePidsFragment.PidsStatus
@@ -28,14 +28,14 @@ class PidsActivity : AppCompatActivity() {
         binding.pidsProgressBar.visibility = View.VISIBLE
 
         try {
-            intent!!.let{
-                val line = it.getParcelableExtra<Line>("Line")!!
-                val styleText = it.getStringExtra("Style")!!
-                setFullScreen(PidsManager.getIsHorizontal(styleText)!!)
-                pidsFragment = PidsManager.getPidsFragment(styleText, this, line)!!
-                setPidsFragment()
-                setPidsHelperWindow()
-            }
+//            intent!!.let{
+//                val lineInfo = it.getParcelableExtra<LineInfo>("Line")!!
+//                val styleText = it.getStringExtra("Style")!!
+//                setFullScreen(PidsManager.getIsHorizontal(styleText)!!)
+//                pidsFragment = PidsManager.getPidsFragment(styleText, this, lineInfo)!!
+//                setPidsFragment()
+//                setPidsHelperWindow()
+//            }
         }catch (e: Exception){
             Toast.makeText(this, "打开时出错", Toast.LENGTH_SHORT).show()
         }

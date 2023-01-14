@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.airy.mypids.ui.theme.MyPIDSTheme
 import com.baidu.mapapi.search.core.PoiInfo
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 import com.airy.mypids.utils.UnitUtil
 
 private const val TAG = "HomeActivity"
@@ -57,7 +57,6 @@ class HomeActivity : ComponentActivity() {
 fun HomeUI(vm: HomeViewModel = viewModel()) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    Log.d(TAG, "HomeUI: ${scrollState.value}")
     Scaffold(
         topBar = {
             val originHeight = 160
@@ -94,7 +93,7 @@ fun HomeUI(vm: HomeViewModel = viewModel()) {
             ConfigurationCard(title = "线路") {
                 LineConfiguration(
                     vm.resultList,
-                    vm.line,
+                    vm.lineInfo,
                     vm.status,
                     onSearch = { cityText, lineText ->
                         vm.onLineSearch(cityText, lineText)
@@ -103,7 +102,7 @@ fun HomeUI(vm: HomeViewModel = viewModel()) {
                         vm.onLineSelected(info)
                     },
                     onClearStatus = {
-                        vm.line = null
+                        vm.lineInfo = null
                         vm.status = LineConfigurationStatus.NOT_CHOOSE
                     }
                 )
@@ -120,8 +119,8 @@ fun HomeUI(vm: HomeViewModel = viewModel()) {
                 enabled = vm.isPidsReady(),
                 onClick = {
                     val intent = Intent(context, PidsActivity::class.java)
-                    intent.putExtra("Line", vm.line)
-                    intent.putExtra("Style", vm.styleName)
+//                    intent.putExtra("Line", vm.lineInfo)
+//                    intent.putExtra("Style", vm.styleName)
                     context.startActivity(intent)
                 },
                 modifier = Modifier
@@ -132,183 +131,6 @@ fun HomeUI(vm: HomeViewModel = viewModel()) {
                 Text("启动PIDS")
             }
         }
-    }
-}
-
-
-@Composable
-fun LineConfiguration(
-    resultList: List<PoiInfo>? = null,
-    line: Line?,
-    status: LineConfigurationStatus,
-    onSearch: (String, String) -> Unit,
-    onLineSelected: (PoiInfo) -> Unit,
-    onClearStatus: () -> Unit
-) {
-    Column(Modifier.fillMaxWidth()) {
-        if (status != LineConfigurationStatus.CHOSEN) {
-            LineSearchBar(onSearch)
-        }
-        if (status == LineConfigurationStatus.IN_CHOOSE) {
-            LineResultList(resultList, onLineSelected)
-        }
-        if (status == LineConfigurationStatus.CHOSEN) {
-            SelectedLine(line, onClearStatus)
-        }
-    }
-}
-
-@Composable
-fun LineSearchBar(onSearch: (String, String) -> Unit) {
-    // TODO: 将测试参数删除
-    var cityText by rememberSaveable { mutableStateOf("广州") }
-    var lineText by rememberSaveable { mutableStateOf("B4") }
-
-    Column {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.weight(2f),
-                value = cityText,
-                onValueChange = { cityText = it },
-                label = { Text("城市") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(backgroundColor = Color.LightGray),
-//                isError = cityText.isEmpty()
-            )
-            OutlinedTextField(
-                modifier = Modifier
-                    .weight(5f)
-                    .padding(horizontal = 6.dp),
-                value = lineText,
-                onValueChange = { lineText = it },
-                label = { Text("线路名称") },
-//                isError = lineText.isEmpty()
-            )
-            BlackFilledTextButton(
-                onClick = {
-                    cityText.trim()
-                    lineText.trim()
-                    onSearch(cityText, lineText)
-                },
-                modifier = Modifier
-                    .fillMaxHeight(0.9f)
-                    .align(Alignment.Bottom)
-                    .padding(start = 20.dp)
-            ) { Text(text = "搜索") }
-        }
-        BlackFilledTextButton(onClick = {}) { Text("已保存的自定义线路") }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun LineResultList(resultList: List<PoiInfo>?, onLineSelected: (PoiInfo) -> Unit) {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .height(160.dp)
-            .border(BorderStroke(2.dp, Color.Black), RoundedCornerShape(6.dp))
-            .padding(10.dp)
-    ) {
-        if (resultList == null) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center)
-            )
-        } else {
-            if (resultList.isEmpty()) {
-                Row(modifier = Modifier.align(Alignment.Center)) {
-                    WarningMessage()
-                }
-            } else {
-                LazyColumn(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-                    items(resultList) { poi ->
-                        Surface(onClick = {
-                            onLineSelected(poi)
-                        }) {
-                            Text(text = poi.name, overflow = TextOverflow.Ellipsis, maxLines = 1)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun SelectedLine(line: Line?, onClearStatus: () -> Unit) {
-    var dialogShow by remember { mutableStateOf(false) }
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .border(BorderStroke(2.dp, Color.Black), RoundedCornerShape(6.dp))
-            .padding(10.dp)
-    ) {
-        Row(Modifier.fillMaxWidth()) {
-            if (line == null) {
-                WarningMessage()
-            } else {
-                Text(
-                    text = line.lineDescription,
-                    style = MaterialTheme.typography.h5
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                onClick = onClearStatus
-            ) {
-                Icon(Icons.Rounded.Clear, "取消选择")
-            }
-        }
-        if (line != null) {
-            Row(Modifier.align(Alignment.End)) {
-                Text("选择所在站点：", color = Color.DarkGray, modifier = Modifier.alignByBaseline())
-                BlackFilledTextButton(modifier = Modifier.alignByBaseline(), onClick = {
-                    dialogShow = true
-                }) {
-                    Text(line.currStation.name, overflow = TextOverflow.Ellipsis, maxLines = 1)
-                }
-            }
-            BlackFilledTextButton(
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .align(Alignment.End),
-                onClick = {
-                    // todo
-                }) { Text("自定义线路") }
-        }
-    }
-    if (dialogShow) {
-        AlertDialog(onDismissRequest = { dialogShow = false }, buttons = {
-            LazyColumn(
-                Modifier
-                    .height(600.dp)
-                    .width(320.dp)
-                    .padding(10.dp)
-            ) {
-                line!!.let {
-                    items(it.stations) { station ->
-                        Surface(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                            it.setCurrStation(station)
-                            dialogShow = false
-                        }) {
-                            Text(station.name, overflow = TextOverflow.Ellipsis, maxLines = 1)
-                        }
-                    }
-                }
-            }
-        })
     }
 }
 

@@ -1,16 +1,11 @@
 package com.airy.mypids
 
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 import com.airy.mypids.pids.PidsManager
 import com.airy.mypids.utils.LineUtil
 import com.airy.mypids.utils.SearchUtil
@@ -26,7 +21,7 @@ private const val TAG = "HomeViewModel"
 class HomeViewModel : ViewModel() {
     val pidsOptionList = PidsManager.getPidsNameList()
     var styleName: String by mutableStateOf(pidsOptionList[0])
-    var line: Line? by mutableStateOf(null)
+    var lineInfo: LineInfo? by mutableStateOf(null)
     var resultList: List<PoiInfo>? by mutableStateOf(null)
     var status by mutableStateOf(LineConfigurationStatus.NOT_CHOOSE)
     var lastSearch by mutableStateOf("")
@@ -60,7 +55,7 @@ class HomeViewModel : ViewModel() {
                     Log.d(TAG, "查找线路出错：${p0?.error?.name}")
                 } else {
                     try {
-                        line = LineUtil.baiduLineToAppLine(p0)
+                        lineInfo = LineUtil.baiduLineToAppLine(p0)
                     } catch (e: NullPointerException) {
                         Log.d(TAG, "数据缺失")
                     }
@@ -73,7 +68,7 @@ class HomeViewModel : ViewModel() {
     /**
      * 是否得到足够的数据启动PIDS
      */
-    fun isPidsReady() = line != null
+    fun isPidsReady() = lineInfo != null
 
     fun onLineSearch(cityText: String, lineText: String) {
         status = LineConfigurationStatus.IN_CHOOSE

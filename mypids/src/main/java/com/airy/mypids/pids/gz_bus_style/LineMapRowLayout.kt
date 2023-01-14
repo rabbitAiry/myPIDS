@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import androidx.core.view.get
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 
 class LineMapRowLayout @JvmOverloads constructor(
     context: Context,
@@ -17,7 +17,7 @@ class LineMapRowLayout @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : LinearLayout(context, attributeSet, defStyleAttr, defStyleRes) {
     var textSize = 0f
-    var line: Line? = null
+    var lineInfo: LineInfo? = null
         set(value) {
             field = value
             initTextViewArray(value!!)
@@ -25,14 +25,14 @@ class LineMapRowLayout @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
-        line?.let {
-            val perWidth = (width - marginLeft - marginRight).toFloat() / it.stationCount
+        lineInfo?.let {
+            val perWidth = (width - marginLeft - marginRight).toFloat() / it.stations.size
             textSize = getTextSize(perWidth * 3 / 4)
         }
     }
 
-    private fun initTextViewArray(line: Line) {
-        val n = line.stationCount
+    private fun initTextViewArray(lineInfo: LineInfo) {
+        val n = lineInfo.stations.size
         val perWidth = width.toFloat() / n
         textSize = getTextSize(perWidth * 3 / 4)
         for (i in 0 until n) {
@@ -40,9 +40,9 @@ class LineMapRowLayout @JvmOverloads constructor(
                 context,
                 isFirst = i == 0,
                 isEnd = i == n - 1,
-                text = line.getStation(i).name,
-                status = if (i > line.currStationIdx) FlowingText.Status.NOT_ARRIVE
-                else if (i == line.currStationIdx) FlowingText.Status.CURR
+                text = lineInfo.stations[i].name,
+                status = if (i > lineInfo.currIdx) FlowingText.Status.NOT_ARRIVE
+                else if (i == lineInfo.currIdx) FlowingText.Status.CURR
                 else FlowingText.Status.ARRIVED
             )
             val params = LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -71,9 +71,9 @@ class LineMapRowLayout @JvmOverloads constructor(
     }
 
     fun nextStation() {
-        line?.let {
-            val child0 = get(it.currStationIdx - 1) as FlowingText
-            val child1 = get(it.currStationIdx) as FlowingText
+        lineInfo?.let {
+            val child0 = get(it.currIdx - 1) as FlowingText
+            val child1 = get(it.currIdx) as FlowingText
             child0.status = FlowingText.Status.ARRIVED
             child1.status = FlowingText.Status.CURR
         }

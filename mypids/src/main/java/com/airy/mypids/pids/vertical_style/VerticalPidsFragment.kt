@@ -9,24 +9,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.airy.mypids.databinding.FragmentPidsVerticalStyleBinding
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 import com.airy.mypids.pids.RunStopPostStartPids
 
 const val TAG = "VerticalPidsFragment"
 
-class VerticalPidsFragment(context: Context, line: Line) :
-    RunStopPostStartPids(context, line) {
+class VerticalPidsFragment(context: Context, lineInfo: LineInfo) :
+    RunStopPostStartPids(context, lineInfo) {
     override fun getPidsStyleName(): String = "基础竖向风格"
     private var _binding: FragmentPidsVerticalStyleBinding? = null
     private val binding get() = _binding!!
-    private val adapter = VerticalPidsAdapter(line.stationNames, context, line.currStationIdx)
+    private val adapter = VerticalPidsAdapter(lineInfo.stationNames, context, lineInfo.currIdx)
 
     override fun displayStationArrived() {
         adapter.stationArrived()
         setNextStationText(
-            if (line.isLastStation) StringBuilder(line.currStation.name).append("，这是本趟旅程的终点站，请所有乘客带齐行李，欢迎再次乘搭")
-                .append(line.lineName).toString()
-            else StringBuilder("当前到站：").append(line.currStation.name).toString()
+            if (lineInfo.isLastStation) StringBuilder(lineInfo.currStation.name).append("，这是本趟旅程的终点站，请所有乘客带齐行李，欢迎再次乘搭")
+                .append(lineInfo.lineName).toString()
+            else StringBuilder("当前到站：").append(lineInfo.currStation.name).toString()
         )
     }
 
@@ -37,11 +37,11 @@ class VerticalPidsFragment(context: Context, line: Line) :
     }
 
     override fun displayRunning() {
-        setNextStationText(StringBuilder("下一站：").append(line.currStation.name).toString())
+        setNextStationText(StringBuilder("下一站：").append(lineInfo.currStation.name).toString())
     }
 
     override fun displayNextStation() {
-        binding.listStations.smoothScrollToPosition(line.currStationIdx + 6)
+        binding.listStations.smoothScrollToPosition(lineInfo.currIdx + 6)
         adapter.nextStation()
     }
 
@@ -68,8 +68,8 @@ class VerticalPidsFragment(context: Context, line: Line) :
         }
         binding.listStations.itemAnimator = null
         binding.listStations.setHasFixedSize(true)
-        binding.textLineName.text = line.lineName
-        binding.textLineDescription.text = StringBuilder(line.directionName).append("方向").toString()
+        binding.textLineName.text = lineInfo.lineName
+        binding.textLineDescription.text = StringBuilder(lineInfo.terminusStation.name).append("方向").toString()
         pidsStationArrived(true)
         return binding.root
     }

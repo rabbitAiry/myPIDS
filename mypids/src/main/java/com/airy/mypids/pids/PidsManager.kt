@@ -1,7 +1,7 @@
 package com.airy.mypids.pids
 
 import android.content.Context
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 import com.airy.mypids.pids.gz_bus_style.GZBusStyleFragment
 import com.airy.mypids.pids.vertical_style.VerticalPidsFragment
 
@@ -16,9 +16,9 @@ object PidsManager {
      */
     fun getPidsNameList() = ArrayList(pidsNameMap.keys)
 
-    fun getPidsFragment(styleName: String, context: Context, line: Line): BasePidsFragment?{
-        return pidsNameMap[styleName]?.clazz?.getDeclaredConstructor(Context::class.java, Line::class.java)
-            ?.newInstance(context, line)
+    fun getPidsFragment(styleName: String, context: Context, lineInfo: LineInfo): BasePidsFragment?{
+        return pidsNameMap[styleName]?.clazz?.getDeclaredConstructor(Context::class.java, LineInfo::class.java)
+            ?.newInstance(context, lineInfo)
     }
 
     fun getIsHorizontal(styleName: String) = pidsNameMap[styleName]?.isHorizontal

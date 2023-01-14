@@ -1,15 +1,15 @@
 package com.airy.mypids.pids
 
 import android.content.Context
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 
 /**
  * 该类负责实现pids状态切换的逻辑，ui变化交由其子类负责
  * 该类表示会涉及以下状态的pids：BUS_STATION_ARRIVED, BUS_RUNNING_START, BUS_RUNNING
  */
-abstract class RunStopPostStartPids(context: Context, line: Line) : RunStopPids(context, line) {
+abstract class RunStopPostStartPids(context: Context, lineInfo: LineInfo) : RunStopPids(context, lineInfo) {
     override fun pidsRunning() {
-        if (line.isLastStation) return
+        if (lineInfo.isLastStation) return
         if (status == PidsStatus.BUS_STATION_ARRIVED) {
             status = PidsStatus.BUS_RUNNING_START
             val delay = displayRunningStart()

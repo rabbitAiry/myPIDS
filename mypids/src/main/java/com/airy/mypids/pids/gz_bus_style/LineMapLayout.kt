@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
-import com.airy.mypids.objects.Line
+import com.airy.mypids.objects.LineInfo
 
 const val MIN_TEXT_SIZE_THRESHOLD = 50
 class LineMapLayout @JvmOverloads constructor(
@@ -17,14 +17,14 @@ class LineMapLayout @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : LinearLayout(context, attributeSet, defStyleAttr, defStyleRes) {
     var textSize = 0f
-    var line: Line? = null
+    var lineInfo: LineInfo? = null
         set(value) {
             field = value
 //            initTextViewArray(value!!)
         }
 
-    private fun initTextViewArray(line: Line) {
-        val n = line.stationCount
+    private fun initTextViewArray(lineInfo: LineInfo) {
+        val n = lineInfo.stations.size
         val perWidth = width.toFloat() / n
         textSize = getTextSize(perWidth * 3 / 4)
         for (i in 0 until n) {
@@ -32,9 +32,9 @@ class LineMapLayout @JvmOverloads constructor(
                 context,
                 isFirst = i == 0,
                 isEnd = i == n - 1,
-                text = line.getStation(i).name,
-                status = if (i > line.currStationIdx) FlowingText.Status.NOT_ARRIVE
-                else if (i == line.currStationIdx) FlowingText.Status.CURR
+                text = lineInfo.stations[i].name,
+                status = if (i > lineInfo.currIdx) FlowingText.Status.NOT_ARRIVE
+                else if (i == lineInfo.currIdx) FlowingText.Status.CURR
                 else FlowingText.Status.ARRIVED
             )
             val params = LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -44,8 +44,8 @@ class LineMapLayout @JvmOverloads constructor(
         }
     }
 
-    private fun needTwoRow(line: Line):Boolean{
-        val perWidth = (width - marginLeft - marginRight).toFloat() / line.stationCount
+    private fun needTwoRow(lineInfo: LineInfo):Boolean{
+        val perWidth = (width - marginLeft - marginRight).toFloat() / lineInfo.stations.size
         return getTextSize(perWidth * 3 / 4)< MIN_TEXT_SIZE_THRESHOLD
     }
 
