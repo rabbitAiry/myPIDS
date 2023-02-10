@@ -53,14 +53,12 @@ class VerticalPidsAdapter(
     }
 
     fun stationArrived(){
-        Log.d(TAG, "stationArrived(adapter): ")
         statusRunning = false
         notifyItemChanged(currStationIdx)
         handler.removeCallbacksAndMessages(null)
     }
 
     fun busRunning(){
-        Log.d(TAG, "busRunning(adapter): ")
         statusRunning = true
         shine()
     }

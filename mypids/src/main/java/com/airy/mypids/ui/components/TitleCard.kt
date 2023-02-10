@@ -12,10 +12,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ConfigurationCard(title: String, content: @Composable () -> Unit) {
+fun TitleCard(title: String, content: @Composable () -> Unit) {
     Card(
         Modifier
             .fillMaxWidth()
@@ -28,13 +29,21 @@ fun ConfigurationCard(title: String, content: @Composable () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.Black)
-                    .padding(start = 20.dp, top = 12.dp, bottom = 12.dp),
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
                 style = MaterialTheme.typography.h5,
                 color = Color.White,
             )
-            Surface(modifier = Modifier.padding(10.dp)) {
+            Surface(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
                 content()
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewConfigCard(){
+    TitleCard(title = "Test") {
+        Text(text = "好一朵迎春花啊，人人都爱他")
     }
 }

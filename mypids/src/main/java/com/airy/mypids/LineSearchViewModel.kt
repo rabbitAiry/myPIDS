@@ -1,13 +1,10 @@
 package com.airy.mypids
-
+/*
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.airy.mypids.objects.LineInfo
-import com.airy.mypids.pids.PidsManager
-import com.airy.mypids.utils.LineUtil
 import com.airy.mypids.utils.SearchUtil
 import com.baidu.mapapi.search.busline.BusLineResult
 import com.baidu.mapapi.search.busline.BusLineSearchOption
@@ -16,12 +13,13 @@ import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.poi.*
 import java.util.*
 
-private const val TAG = "HomeViewModel"
+private const val TAG = "LineSearchViewModel"
+class LineSearchViewModel : ViewModel() {
 
-class HomeViewModel : ViewModel() {
+
     val pidsOptionList = PidsManager.getPidsNameList()
     var styleName: String by mutableStateOf(pidsOptionList[0])
-    var lineInfo: LineInfo? by mutableStateOf(null)
+    var pidsInfo: PidsManager.PidsInfo? by mutableStateOf(null)
     var resultList: List<PoiInfo>? by mutableStateOf(null)
     var status by mutableStateOf(LineConfigurationStatus.NOT_CHOOSE)
     var lastSearch by mutableStateOf("")
@@ -55,7 +53,7 @@ class HomeViewModel : ViewModel() {
                     Log.d(TAG, "查找线路出错：${p0?.error?.name}")
                 } else {
                     try {
-                        lineInfo = LineUtil.baiduLineToAppLine(p0)
+                        pidsInfo = LineUtil.baiduLineToAppLine(p0)
                     } catch (e: NullPointerException) {
                         Log.d(TAG, "数据缺失")
                     }
@@ -68,18 +66,17 @@ class HomeViewModel : ViewModel() {
     /**
      * 是否得到足够的数据启动PIDS
      */
-    fun isPidsReady() = lineInfo != null
+    fun isPidsReady() = pidsInfo != null
 
     fun onLineSearch(cityText: String, lineText: String) {
         status = LineConfigurationStatus.IN_CHOOSE
         resultList = null
         SearchUtil.getPoiSearch().searchInCity(
-            // todo: 如何获取多页数据
             PoiCitySearchOption().city(cityText).keyword(lineText).scope(2).pageCapacity(1000)
         )
     }
 
-    fun onLineSelected(info: PoiInfo){
+    fun onLineSelected(info: PoiInfo) {
         resultList = null       // 为了展现ProgressBar
         SearchUtil.getBusLineSearch().searchBusLine(
             BusLineSearchOption().city(info.city).uid(info.uid)
@@ -92,6 +89,4 @@ class HomeViewModel : ViewModel() {
     }
 }
 
-enum class LineConfigurationStatus {
-    NOT_CHOOSE, IN_CHOOSE, CHOSEN
-}
+ */

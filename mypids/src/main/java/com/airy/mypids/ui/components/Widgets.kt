@@ -1,4 +1,4 @@
-package com.airy.mypids.ui.common
+package com.airy.mypids.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -41,31 +41,3 @@ fun BlackFilledTextButton(
     )
 }
 
-@Composable
-fun WarningMessage(text: String, modifier: Modifier = Modifier) {
-    Box(modifier) {
-        Icon(Icons.Rounded.Warning, "注意")
-        Text(text, color = Color.DarkGray)
-    }
-}
-
-@Composable
-fun ColorSelector(labelText: String, colorText: String, onColorTextChange: (String) -> Unit) {
-    var color = Color.White
-    var colorError = false
-    try {
-        color = Color(colorText.toInt(16))
-    }catch (e:Exception){
-        colorError = true
-    }
-    Row {
-        OutlinedTextField(
-            value = colorText,
-            onValueChange = onColorTextChange,
-            label = { Text(text = labelText) },
-            isError = colorError
-        )
-        Surface(modifier = Modifier.width(24.dp).height(24.dp), shape = CircleShape, color = color, elevation = 10.dp) {
-        }
-    }
-}

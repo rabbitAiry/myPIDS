@@ -1,11 +1,11 @@
 package com.airy.mypids.objects
 
 class Station(
-    val names: Array<String>,
+    val names: List<String>,
     val latitude: Double,
     val longitude: Double,
-    val interchanges: Array<String>? = null,
-    val farInterchanges: Array<String>? = null,
+    val interchanges: List<String>? = null,
+    val farInterchanges: List<String>? = null,
     val underConstruction: Boolean = false,
     val openDoorSide: OpenDoorSide = OpenDoorSide.LEFT
 ){

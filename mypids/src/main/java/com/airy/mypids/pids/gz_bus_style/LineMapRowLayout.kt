@@ -1,81 +1,81 @@
 package com.airy.mypids.pids.gz_bus_style
-
-import android.content.Context
-import android.graphics.Paint
-import android.util.AttributeSet
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.view.get
-import androidx.core.view.marginLeft
-import androidx.core.view.marginRight
-import com.airy.mypids.objects.LineInfo
-
-class LineMapRowLayout @JvmOverloads constructor(
-    context: Context,
-    attributeSet: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    defStyleRes: Int = 0
-) : LinearLayout(context, attributeSet, defStyleAttr, defStyleRes) {
-    var textSize = 0f
-    var lineInfo: LineInfo? = null
-        set(value) {
-            field = value
-            initTextViewArray(value!!)
-        }
-
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        super.onLayout(changed, l, t, r, b)
-        lineInfo?.let {
-            val perWidth = (width - marginLeft - marginRight).toFloat() / it.stations.size
-            textSize = getTextSize(perWidth * 3 / 4)
-        }
-    }
-
-    private fun initTextViewArray(lineInfo: LineInfo) {
-        val n = lineInfo.stations.size
-        val perWidth = width.toFloat() / n
-        textSize = getTextSize(perWidth * 3 / 4)
-        for (i in 0 until n) {
-            val view = FlowingText(
-                context,
-                isFirst = i == 0,
-                isEnd = i == n - 1,
-                text = lineInfo.stations[i].name,
-                status = if (i > lineInfo.currIdx) FlowingText.Status.NOT_ARRIVE
-                else if (i == lineInfo.currIdx) FlowingText.Status.CURR
-                else FlowingText.Status.ARRIVED
-            )
-            val params = LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
-            params.weight = 1f
-            view.layoutParams = params
-            addView(view)
-        }
-    }
-
-    /**
-     * 期望是每一行只有一个字
-     */
-    private fun getTextSize(width: Float): Float {
-        val max = 200
-        var left = 0
-        var right = max
-        val paint = Paint()
-        while (left < right) {
-            val mid = (left + right + 1) / 2
-            paint.textSize = mid.toFloat()
-            val tempWidth = paint.measureText("测")
-            if (tempWidth > width) right = mid - 1
-            else left = mid
-        }
-        return left.toFloat()
-    }
-
-    fun nextStation() {
-        lineInfo?.let {
-            val child0 = get(it.currIdx - 1) as FlowingText
-            val child1 = get(it.currIdx) as FlowingText
-            child0.status = FlowingText.Status.ARRIVED
-            child1.status = FlowingText.Status.CURR
-        }
-    }
-}
+//
+//import android.content.Context
+//import android.graphics.Paint
+//import android.util.AttributeSet
+//import android.view.ViewGroup
+//import android.widget.LinearLayout
+//import androidx.core.view.get
+//import androidx.core.view.marginLeft
+//import androidx.core.view.marginRight
+//import com.airy.mypids.objects.PidsInfo
+//
+//class LineMapRowLayout @JvmOverloads constructor(
+//    context: Context,
+//    attributeSet: AttributeSet? = null,
+//    defStyleAttr: Int = 0,
+//    defStyleRes: Int = 0
+//) : LinearLayout(context, attributeSet, defStyleAttr, defStyleRes) {
+//    var textSize = 0f
+//    var pidsInfo: PidsInfo? = null
+//        set(value) {
+//            field = value
+//            initTextViewArray(value!!)
+//        }
+//
+//    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+//        super.onLayout(changed, l, t, r, b)
+//        pidsInfo?.let {
+//            val perWidth = (width - marginLeft - marginRight).toFloat() / it.stations.size
+//            textSize = getTextSize(perWidth * 3 / 4)
+//        }
+//    }
+//
+//    private fun initTextViewArray(pidsInfo: PidsInfo) {
+//        val n = pidsInfo.stations.size
+//        val perWidth = width.toFloat() / n
+//        textSize = getTextSize(perWidth * 3 / 4)
+//        for (i in 0 until n) {
+//            val view = FlowingText(
+//                context,
+//                isFirst = i == 0,
+//                isEnd = i == n - 1,
+//                text = pidsInfo.stations[i].name,
+//                status = if (i > pidsInfo.currIdx) FlowingText.Status.NOT_ARRIVE
+//                else if (i == pidsInfo.currIdx) FlowingText.Status.CURR
+//                else FlowingText.Status.ARRIVED
+//            )
+//            val params = LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
+//            params.weight = 1f
+//            view.layoutParams = params
+//            addView(view)
+//        }
+//    }
+//
+//    /**
+//     * 期望是每一行只有一个字
+//     */
+//    private fun getTextSize(width: Float): Float {
+//        val max = 200
+//        var left = 0
+//        var right = max
+//        val paint = Paint()
+//        while (left < right) {
+//            val mid = (left + right + 1) / 2
+//            paint.textSize = mid.toFloat()
+//            val tempWidth = paint.measureText("测")
+//            if (tempWidth > width) right = mid - 1
+//            else left = mid
+//        }
+//        return left.toFloat()
+//    }
+//
+//    fun nextStation() {
+//        pidsInfo?.let {
+//            val child0 = get(it.currIdx - 1) as FlowingText
+//            val child1 = get(it.currIdx) as FlowingText
+//            child0.status = FlowingText.Status.ARRIVED
+//            child1.status = FlowingText.Status.CURR
+//        }
+//    }
+//}

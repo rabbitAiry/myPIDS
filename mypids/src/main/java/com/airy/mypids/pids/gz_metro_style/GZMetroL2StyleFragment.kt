@@ -1,4 +1,4 @@
-package com.airy.mypids.pids.gz_metro_l2_style
+package com.airy.mypids.pids.gz_metro_style
 
 import android.content.Context
 import com.airy.mypids.pids.BasePidsFragment

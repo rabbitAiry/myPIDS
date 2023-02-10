@@ -8,9 +8,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.airy.mypids.databinding.ActivityPidsBinding
-import com.airy.mypids.objects.LineInfo
 import com.airy.mypids.pids.BasePidsFragment
-import com.airy.mypids.pids.PidsManager
 import com.airy.mypids.pids.BasePidsFragment.PidsStatus
 import com.airy.mypids.views.HelperLayout
 import java.lang.Exception

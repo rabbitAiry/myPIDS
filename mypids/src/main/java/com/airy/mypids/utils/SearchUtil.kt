@@ -14,6 +14,7 @@ object SearchUtil {
         mPoiSearch!!.setOnGetPoiSearchResultListener(mSearchListener)
         mBusLineSearch = BusLineSearch.newInstance()
         mBusLineSearch!!.setOnGetBusLineSearchResultListener(mBusLineSearchListener)
+        // com.baidu.platform.core.busline.a
     }
 
     fun releaseSearches() {

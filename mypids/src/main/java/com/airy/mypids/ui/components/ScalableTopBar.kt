@@ -1,2 +1,51 @@
 package com.airy.mypids.ui.components
 
+import android.content.Context
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+@Composable
+fun ScalableTopBar(
+    title: String,
+    maxHeight: Int = 180,
+    minHeight: Int = 60,
+    scrollState: ScrollState,
+    context: Context
+) {
+    val loss = (maxHeight - minHeight).coerceAtMost(pxToDp(context, scrollState.value))
+    val rate = (maxHeight - loss) / maxHeight
+    val boxHeight = maxHeight - loss
+    val textSize = 48 * rate
+    val bottomPadding = if (boxHeight == minHeight) 10 else 20
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(boxHeight.dp)
+            .background(MaterialTheme.colors.primary)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.h3,
+            fontSize = textSize.sp,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 20.dp, bottom = bottomPadding.dp)
+        )
+    }
+}
+
+fun pxToDp(context: Context, px: Int): Int{
+    val scale = context.resources.displayMetrics.scaledDensity
+    return (px/scale+0.5f).toInt()
+}
