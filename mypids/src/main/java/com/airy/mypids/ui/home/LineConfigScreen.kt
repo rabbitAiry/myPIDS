@@ -12,42 +12,74 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.airy.mypids.data.LineInfo
+import com.airy.mypids.data.Station
 import com.airy.mypids.ui.components.ConfigRowOfColorSelector
 import com.airy.mypids.ui.components.ConfigRowOfTextField
-import com.airy.mypids.utils.ColorUtil
+import com.airy.mypids.ui.components.FinishStepsButton
+import com.airy.mypids.viewmodels.PidsData
 
 val DEFAULT_COLOR = Color.White
 
 @Composable
-fun LineConfigScreen(modifier: Modifier = Modifier) {
-    var lineId by remember { mutableStateOf("") }
-    var colorString by remember { mutableStateOf("FFFFFF") }
-    var color by remember { mutableStateOf(Color.White) }
+fun LineConfigScreen(
+    pids: PidsData,
+    navController: NavHostController = rememberNavController()
+) {
+    val lineInfo = pids.lineInfo!!
+    // TODO
+    var lineId by remember { mutableStateOf(lineInfo.lineId) }
+    var color by remember { mutableStateOf(lineInfo.lineColor) }
+    var colorString by remember { mutableStateOf(lineInfo.lineColor.value.shr(8).toString(16)) }
     var isWrongColor by remember { mutableStateOf(true) }
     Column {
-        LineDemo(lineId, color)
-        ConfigLineId(lineId){ lineId = it }
-        ConfigLineColor(color, colorString, isWrongColor){
-            colorString = it
-            val resColor = ColorUtil.parseColor(it)
-            if (resColor != null) {
-                isWrongColor = false
-                color = resColor
-            } else {
-                isWrongColor = true
-                color = DEFAULT_COLOR
-            }
+        LineDemo(lineInfo, pids.stationListInfo!!.stations)
+        ConfigLineId(lineId) {
+            pids.setLineId(it)
+            lineId = it
         }
+//        ConfigLineColor(color, colorString, isWrongColor) {
+//            colorString = it
+//            val resColor = ColorUtil.parseColor(it)
+//            if (resColor != null) {
+//                isWrongColor = false
+//                color = resColor
+//                vm.setLineColor(color)
+//            } else {
+//                isWrongColor = true
+//                color = DEFAULT_COLOR
+//            }
+//        }
+        FinishStepsButton(enabled = true, navController = navController)
     }
 }
 
 @Composable
-fun LineDemo(lineId: String, color: Color){
-    Card(Modifier.padding(20.dp).fillMaxWidth().border(2.dp, Color.DarkGray, RoundedCornerShape(10)).padding(20.dp)) {
-        Row(horizontalArrangement = Arrangement.Center){
-            // TODO: 换成对应线路的站名
-            Station(name = "大学城南", lineId = lineId, stationId = "X", color = color, extraWidth = 50, isStart = true)
-            Station(name = "板桥", lineId = lineId, stationId = "X", color = color, extraWidth = 50)
+fun LineDemo(line: LineInfo, stations: List<Station>) {
+    Card(
+        Modifier
+            .padding(20.dp)
+            .fillMaxWidth()
+            .border(2.dp, Color.DarkGray, RoundedCornerShape(10))
+    ) {
+        Row(Modifier.padding(20.dp), horizontalArrangement = Arrangement.Center) {
+            Station(
+                name = stations[0].name,
+                lineId = line.lineId,
+                stationId = "X",
+                color = line.lineColor,
+                extraWidth = 50,
+                isStart = true
+            )
+            Station(
+                name = stations[1].name,
+                lineId = line.lineId,
+                stationId = "X",
+                color = line.lineColor,
+                extraWidth = 50
+            )
         }
     }
 }
@@ -67,7 +99,7 @@ private fun ConfigLineColor(
     color: Color,
     colorString: String,
     isWrongColor: Boolean,
-    onValueChange: (String)->Unit,
+    onValueChange: (String) -> Unit,
 ) {
     ConfigRowOfColorSelector(
         configTitle = "线路颜色",
@@ -82,5 +114,5 @@ private fun ConfigLineColor(
 @Preview("LineNameConfig", backgroundColor = 0xffffff, showBackground = true)
 @Composable
 fun PreviewLineNameConfig() {
-    LineConfigScreen()
+
 }

@@ -14,7 +14,7 @@ import com.airy.mypids.HomeUI
 @SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
     primary = red_500,
-    primaryVariant = red_500,
+    primaryVariant = Color.Black,
     secondary = golden_500,
     onPrimary = Color.Black,
     surface = light_gray_100,

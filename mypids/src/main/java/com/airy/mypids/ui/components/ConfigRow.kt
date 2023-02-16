@@ -69,16 +69,18 @@ fun ConfigRowOfTextField(
 fun <T> ConfigRowOfRadioGroup(
     configTitle: String,
     selections: List<T>,
-    selectedId: Int,
+    selected: T,
     configDescription: String?,
-    onValueChange: (String) -> Unit
+    onValueChange: (T) -> Unit
 ) {
     ConfigRowOfContent(configTitle = configTitle) {
         Column(it) {
             LazyRow {
-                itemsIndexed(selections) { index, item ->
+                itemsIndexed(selections) { _, item ->
                     Row {
-                        RadioButton(selected = index == selectedId, onClick = { /*TODO*/ })
+                        RadioButton(selected = item == selected, onClick = {
+                            onValueChange(item)
+                        })
                         Text(item.toString(), Modifier.align(Alignment.CenterVertically))
                     }
                 }
@@ -158,7 +160,7 @@ private fun OfRadioGroup() {
     ConfigRowOfRadioGroup(
         configTitle = "选择线路朝向",
         selections = listOf("向北", "向南", "向西", "向东"),
-        selectedId = 0,
+        selected = "向北",
         configDescription = ""
     ) {}
 }

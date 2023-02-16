@@ -20,7 +20,7 @@ val light_blue_500 = Color(0xFF648BF1)
 val light_blue_600 = Color(0xFF5181FF)
 val light_blue_800 = Color(0xFF3B6FF6)
 
-val light_gray_100 = Color(0xFFEEEEEE)
+val light_gray_100 = Color(0xFFFEFEFE)
 val gray = Color(0xFF888888)
 val dark_gray_100 = Color(0xFF111111)
 val deep_blue_800 = Color(0xFF283593)

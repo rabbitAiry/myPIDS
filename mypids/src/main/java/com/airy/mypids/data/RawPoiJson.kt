@@ -1,4 +1,4 @@
-package com.airy.mypids.objects
+package com.airy.mypids.data
 
 data class RawPoiJson(
     val message: String,
@@ -12,5 +12,5 @@ data class RawPoiListItem(
 )
 
 data class RawDetail(
-    val tag: String
+    val tag: String?
 )

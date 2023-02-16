@@ -1,4 +1,4 @@
-package com.airy.mypids.objects
+package com.airy.mypids.data
 
 data class RawBaiduMapLineJson(
     val bsl: RawBaiduMapLineInfo?,
@@ -13,7 +13,7 @@ data class RawBaiduMapLineInfo(
 data class RawBaiduMapLine(
     val name: String,
     val line_direction:String,
-    val line_color: String = "#FFFFFF",
+    val line_color: String?,
     val geo: String,
     val company: String,
     val startTime: String,

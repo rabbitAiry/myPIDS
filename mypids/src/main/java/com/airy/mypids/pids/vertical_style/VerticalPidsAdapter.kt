@@ -3,7 +3,6 @@ package com.airy.mypids.pids.vertical_style
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +10,11 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.airy.mypids.R
+import com.airy.mypids.data.Station
 import com.airy.mypids.utils.ResUtil
 
 class VerticalPidsAdapter(
-    var stationNames: List<String>,
+    var stations: List<Station>,
     val context: Context,
     private var currStationIdx: Int
 ) : RecyclerView.Adapter<VerticalPidsAdapter.VerticalPidsHolder>() {
@@ -38,12 +38,12 @@ class VerticalPidsAdapter(
         val shapeId =
             if (pos < currStationIdx || (pos == currStationIdx && (shiningOn || !statusRunning))) R.drawable.station_arrived_round else R.drawable.station_unarrive_round
         holder.stationStatus.background = AppCompatResources.getDrawable(context, shapeId)
-        holder.stationName.text = stationNames[pos]
+        holder.stationName.text = stations[pos].name
         val backgroundColorId = if(pos == currStationIdx) R.color.light_blue_100 else R.color.white
         holder.itemView.setBackgroundColor(ResUtil.getResColor(backgroundColorId, context))
     }
 
-    override fun getItemCount(): Int = stationNames.size
+    override fun getItemCount(): Int = stations.size
 
     fun nextStation() {
         currStationIdx++

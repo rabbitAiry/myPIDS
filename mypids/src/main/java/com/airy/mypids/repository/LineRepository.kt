@@ -1,24 +1,16 @@
 package com.airy.mypids.repository
 
 import android.util.Log
-import com.airy.mypids.objects.RawBaiduMapLineJson
-import com.airy.mypids.objects.RawPoiJson
+import com.airy.mypids.data.RawBaiduMapLineJson
 import com.airy.mypids.utils.responseViaOkHttp
 import com.baidu.mapapi.search.busline.BusLineSearch
 import com.baidu.mapapi.search.busline.BusLineSearchOption
-import com.baidu.mapapi.search.poi.PoiCitySearchOption
-import com.baidu.mapapi.search.poi.PoiSearch
 import com.baidu.platform.base.SearchType
 import com.baidu.platform.core.busline.a
 import com.baidu.platform.core.busline.b
-import com.baidu.platform.core.d.g
-import com.baidu.platform.core.d.i
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.lang.reflect.Constructor
 
 private const val TAG = "BaiduMapLineRepository"
 
@@ -32,7 +24,7 @@ class LineRepository {
             try {
                 result = Gson().fromJson(responseViaOkHttp(url), RawBaiduMapLineJson::class.java)
             } catch (e: Exception) {
-                Log.d(TAG, "lineSearch Cannot Search Error: $e")
+                Log.e(TAG, "lineSearch Cannot Search Error: $e")
             }
             result
         }

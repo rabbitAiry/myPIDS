@@ -1,7 +1,7 @@
 package com.airy.mypids.repository
 
 import android.util.Log
-import com.airy.mypids.objects.RawPoiJson
+import com.airy.mypids.data.RawPoiJson
 import com.airy.mypids.utils.responseViaOkHttp
 import com.baidu.mapapi.search.poi.PoiCitySearchOption
 import com.baidu.mapapi.search.poi.PoiSearch
@@ -26,7 +26,6 @@ class PoiLineRepository {
             } catch (e: Exception) {
                 Log.e(TAG, "linePoiSearch Cannot Search Error: $e")
             }
-            Log.e(TAG, "linePoiSearch/after $result", )
             result
         }
     }

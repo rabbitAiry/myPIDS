@@ -1,4 +1,4 @@
-package com.airy.mypids.objects
+package com.airy.mypids.data
 
 class Station(
     val names: List<String>,

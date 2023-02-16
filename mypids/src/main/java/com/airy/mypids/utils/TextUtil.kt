@@ -1,21 +1,25 @@
 package com.airy.mypids.utils
 
+import android.util.Log
+
 object TextUtil {
 
+    private const val TAG = "TextUtil"
     /**
      * 从线路描述中提取线路名称
      *
      * 如：输入"地铁3号线(天河客运站-番禺广场)"则返回"3号线"
      */
-    fun getRawLineName(lineName: String): String {
-        var result = lineName
+    fun getRawLineName(lineName: String): String{
+        Log.d(TAG, "getRawLineName: $lineName")
         val start = if (lineName.startsWith("地铁")) 2 else 0
         for (i in lineName.indices){
             if(lineName[i]=='('){
-                result = lineName.substring(start, i)
+                Log.d(TAG, "getRawLineName: ${lineName.substring(start, i)}")
+                return lineName.substring(start, i)
             }
         }
-        return result
+        return lineName
     }
 
     /**

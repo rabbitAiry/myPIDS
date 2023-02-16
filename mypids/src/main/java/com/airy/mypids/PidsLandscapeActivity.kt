@@ -1,34 +1,32 @@
 package com.airy.mypids
 
 import android.content.pm.ActivityInfo
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import com.airy.mypids.databinding.ActivityPidsBinding
 import com.airy.mypids.pids.BasePidsFragment
-import com.airy.mypids.pids.BasePidsFragment.PidsStatus
 import com.airy.mypids.pids.PidsManager
 import com.airy.mypids.viewmodels.PidsData
 import com.airy.mypids.views.HelperLayout
 
-private const val TAG = "PidsActivity"
-class PidsActivity : AppCompatActivity() {
+private const val TAG = "PidsLandscapeActivity"
+class PidsLandscapeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPidsBinding
     private lateinit var pidsFragment: BasePidsFragment
     private lateinit var windowView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val styleText = PidsData.style
-        if(PidsManager.getIsHorizontal(styleText))requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;//强制为横屏
         super.onCreate(null)
         binding = ActivityPidsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setFullScreen()
         supportActionBar?.hide()
         binding.pidsProgressBar.visibility = View.VISIBLE
+        val styleText = PidsData.style
         pidsFragment = PidsManager.getPidsFragment(styleText, this, PidsData.lineInfo!!, PidsData.stationListInfo!!)!!
         setPidsFragment()
         setPidsHelperWindow()
@@ -87,15 +85,15 @@ class PidsActivity : AppCompatActivity() {
     }
 
     private fun stationArrived() {
-        if (pidsFragment.status == PidsStatus.BUS_STATION_ARRIVED) return
+        if (pidsFragment.status == BasePidsFragment.PidsStatus.BUS_STATION_ARRIVED) return
         pidsFragment.pidsStationArrived(true)
     }
 
     private fun busRun() {
         if (pidsFragment.status in arrayOf(
-                PidsStatus.BUS_RUNNING,
-                PidsStatus.BUS_RUNNING_START,
-                PidsStatus.BUS_RUNNING_REPORTING
+                BasePidsFragment.PidsStatus.BUS_RUNNING,
+                BasePidsFragment.PidsStatus.BUS_RUNNING_START,
+                BasePidsFragment.PidsStatus.BUS_RUNNING_REPORTING
             )
         ) return
         nextStation()

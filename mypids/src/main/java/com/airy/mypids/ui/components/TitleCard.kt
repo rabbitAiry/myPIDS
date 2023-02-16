@@ -33,7 +33,7 @@ fun TitleCard(title: String, content: @Composable () -> Unit) {
                 style = MaterialTheme.typography.h5,
                 color = Color.White,
             )
-            Surface(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+            Surface(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
                 content()
             }
         }
