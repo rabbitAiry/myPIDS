@@ -5,7 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.Fragment
 
-abstract class BasePidsFragment(private val context: Context) : Fragment() {
+abstract class BasePidsFragment: Fragment() {
     /**
      * 获取当前pids名称
      */
@@ -27,11 +27,7 @@ abstract class BasePidsFragment(private val context: Context) : Fragment() {
      */
     abstract fun nextStation()
 
-    final override fun getContext() = context
+    final override fun getContext() = activity as Context
     val handler = Handler(Looper.getMainLooper())
     var status = PidsStatus.BUS_STATION_ARRIVED
-
-    enum class PidsStatus {
-        BUS_STATION_ARRIVED, BUS_RUNNING_START, BUS_RUNNING, BUS_RUNNING_REPORTING;
-    }
 }

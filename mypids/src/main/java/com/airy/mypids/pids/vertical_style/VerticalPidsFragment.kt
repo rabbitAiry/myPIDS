@@ -1,87 +1,74 @@
 package com.airy.mypids.pids.vertical_style
 
-import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
-import com.airy.mypids.data.LineInfo
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.airy.mypids.data.PidsData
 import com.airy.mypids.data.StationListInfo
-import com.airy.mypids.databinding.FragmentPidsVerticalStyleBinding
-import com.airy.mypids.pids.RunStopPostStartPids
+import com.airy.mypids.pids.StationStatus
+import com.airy.mypids.ui.theme.light_blue_400
+import com.airy.mypids.ui.theme.light_blue_600
+import com.airy.mypids.viewmodels.DisplayViewModel
 
-class VerticalPidsFragment(context: Context, private val lineInfo: LineInfo, stations: StationListInfo) :
-    RunStopPostStartPids(context, stations) {
-    override fun getPidsStyleName(): String = "基础竖向风格"
-    private var _binding: FragmentPidsVerticalStyleBinding? = null
-    private val binding get() = _binding!!
-    private val adapter = VerticalPidsAdapter(stations.stations, context, stations.currIdx)
+@Composable
+fun VerticalPidsScreen() {
+    val vm = DisplayViewModel()
+    val lineInfo = PidsData.lineInfo!!
+    val stations = PidsData.stationListInfo!!
+    Column(Modifier.fillMaxSize()) {
+        LineInfoBar(lineInfo.rawLineName, "${lineInfo.lineDirection}方向")
+        NotificationBar("")
+        StationListBar(stations, vm.stationStatus)
+    }
+}
 
-    override fun displayStationArrived() {
-        adapter.stationArrived()
-        setNextStationText(
-            if (stations.isLastStation()) StringBuilder(stations.currStation.name).append("，这是本趟旅程的终点站，请所有乘客带齐行李，欢迎再次乘搭")
-                .append(lineInfo.rawLineName).toString()
-            else StringBuilder("当前到站：").append(stations.currStation.name).toString()
+@Composable
+fun LineInfoBar(lineName: String, lineDirection: String) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(light_blue_600)
+            .padding(horizontal = 14.dp, vertical = 48.dp)
+    ) {
+        Text(text = lineName, style = MaterialTheme.typography.h3)
+        Text(text = lineDirection, style = MaterialTheme.typography.h6)
+    }
+}
+
+@Composable
+fun NotificationBar(content: String) {
+    Box(Modifier.fillMaxWidth().background(light_blue_400)) {
+        Text(
+            text = content,
+            Modifier.padding(10.dp),
+            style = MaterialTheme.typography.h6,
+            maxLines = 1
         )
     }
+}
 
-    override fun displayRunningStart() :Long{
-        adapter.busRunning()
-        setNextStationText("尊老爱幼是中华民族的传统美德，请您为有需要的乘客让座，谢谢！")
-        return 16000
-    }
-
-    override fun displayRunning() {
-        setNextStationText(StringBuilder("下一站：").append(stations.currStation.name).toString())
-    }
-
-    override fun displayNextStation() {
-        binding.listStations.smoothScrollToPosition(stations.currIdx + 6)
-        adapter.nextStation()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentPidsVerticalStyleBinding.inflate(inflater, container, false)
-        binding.listStations.adapter = adapter
-        binding.listStations.layoutManager = object : LinearLayoutManager(context) {
-            override fun smoothScrollToPosition(
-                recyclerView: RecyclerView?,
-                state: RecyclerView.State?,
-                position: Int
-            ) {
-                val scroller = object : LinearSmoothScroller(context) {
-                    override fun calculateTimeForScrolling(dx: Int): Int =
-                        super.calculateTimeForScrolling(dx) * 20
-                }
-                scroller.targetPosition = position
-                startSmoothScroll(scroller)
-            }
-        }
-        binding.listStations.itemAnimator = null
-        binding.listStations.setHasFixedSize(true)
-        binding.textLineName.text = lineInfo.rawLineName
-        binding.textLineDescription.text = StringBuilder(stations.terminal.name).append("方向").toString()
-        pidsStationArrived(true)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        handler.removeCallbacksAndMessages(null)
-    }
-
-    private fun setNextStationText(text: String) {
-        binding.textNextStation.post {
-            binding.textNextStation.setText(text)
+@Composable
+fun StationListBar(stations: StationListInfo, stationStatus: List<MutableState<StationStatus>>) {
+    LazyColumn(userScrollEnabled = false) {
+        itemsIndexed(stationStatus) { index, status ->
+            Station(
+                name = stations[index].name,
+                status = status.value
+            )
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewVerticalPids() {
+    VerticalPidsScreen()
 }

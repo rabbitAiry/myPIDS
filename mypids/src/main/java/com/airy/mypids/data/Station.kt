@@ -1,5 +1,7 @@
 package com.airy.mypids.data
 
+import com.airy.mypids.pids.StationStatus
+
 class Station(
     val names: List<String>,
     val latitude: Double,

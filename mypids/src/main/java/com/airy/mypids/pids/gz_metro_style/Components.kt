@@ -29,13 +29,26 @@ fun Station(
     isStart: Boolean = false,
     isEnd: Boolean = false
 ) {
-    val wholeWidth = extraWidth+50
+    val wholeWidth = extraWidth + 50
     Column() {
-        Box(modifier = Modifier.width(wholeWidth.dp).padding(vertical = 2.dp).drawWithContent {
-            if(!isStart)drawLine(color, Offset(0f, size.height / 2), Offset(size.width/2, size.height / 2), 4.dp.toPx())
-            if(!isEnd)drawLine(color, Offset(size.width/2, size.height / 2), Offset(size.width, size.height / 2), 4.dp.toPx())
-            drawContent()
-        }){
+        Box(modifier = Modifier
+            .width(wholeWidth.dp)
+            .padding(vertical = 2.dp)
+            .drawWithContent {
+                if (!isStart) drawLine(
+                    color,
+                    Offset(0f, size.height / 2),
+                    Offset(size.width / 2, size.height / 2),
+                    4.dp.toPx()
+                )
+                if (!isEnd) drawLine(
+                    color,
+                    Offset(size.width / 2, size.height / 2),
+                    Offset(size.width, size.height / 2),
+                    4.dp.toPx()
+                )
+                drawContent()
+            }) {
             Surface(
                 Modifier
                     .width(50.dp)
@@ -57,7 +70,7 @@ fun Station(
                     .align(Alignment.Center)
                     .clip(RoundedCornerShape(100))
             ) {
-                Row(Modifier.background(Color.White, RoundedCornerShape(100))){
+                Row(Modifier.background(Color.White, RoundedCornerShape(100))) {
                     StationNumText(text = lineId)
                     StationNumText(text = stationId)
                 }

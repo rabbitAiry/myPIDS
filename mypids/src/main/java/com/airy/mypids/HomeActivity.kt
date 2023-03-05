@@ -21,7 +21,7 @@ import com.airy.mypids.ui.home.LineConfigScreen
 import com.airy.mypids.ui.home.LineScreen
 import com.airy.mypids.ui.home.MainScreen
 import com.airy.mypids.ui.theme.MyPIDSTheme
-import com.airy.mypids.viewmodels.PidsData
+import com.airy.mypids.data.PidsData
 
 
 private const val TAG = "HomeActivity"
@@ -29,6 +29,7 @@ private const val TAG = "HomeActivity"
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTransparentTopBar()
         setContent {
             MyPIDSTheme {
                 Surface(
@@ -38,7 +39,6 @@ class HomeActivity : ComponentActivity() {
                 }
             }
         }
-        setTransparentTopBar()
     }
 
     private fun setTransparentTopBar() {

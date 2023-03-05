@@ -11,13 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.airy.mypids.PidsActivity
-import com.airy.mypids.PidsLandscapeActivity
+import com.airy.mypids.DisplayActivity
 import com.airy.mypids.pids.PidsManager
 import com.airy.mypids.ui.components.ConfigRowOfRadioGroup
 import com.airy.mypids.ui.components.RowWarningText
 import com.airy.mypids.ui.components.TitleCard
-import com.airy.mypids.viewmodels.PidsData
+import com.airy.mypids.data.PidsData
 
 @Composable
 fun MainScreen(pids: PidsData, scrollState: ScrollState, context: Context, onLineButtonClick: () -> Unit) {
@@ -79,7 +78,7 @@ fun StartPidsButton(context: Context, isReady: Boolean, pids: PidsData, modifier
     Button(
         enabled = isReady, onClick = {
 //            val target = if(PidsManager.getIsHorizontal(pids.style)) PidsLandscapeActivity::class.java else PidsActivity::class.java
-            val intent = Intent(context, PidsActivity::class.java)
+            val intent = Intent(context, DisplayActivity::class.java)
             context.startActivity(intent)
         }, modifier = modifier
     ) {

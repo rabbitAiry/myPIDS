@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/pids_container"
-    tools:context=".PidsActivity"
+    tools:context=".DisplayActivity"
     android:fitsSystemWindows="true">
 
     <ProgressBar

@@ -19,7 +19,7 @@ import com.airy.mypids.data.Station
 import com.airy.mypids.ui.components.ConfigRowOfColorSelector
 import com.airy.mypids.ui.components.ConfigRowOfTextField
 import com.airy.mypids.ui.components.FinishStepsButton
-import com.airy.mypids.viewmodels.PidsData
+import com.airy.mypids.data.PidsData
 
 val DEFAULT_COLOR = Color.White
 

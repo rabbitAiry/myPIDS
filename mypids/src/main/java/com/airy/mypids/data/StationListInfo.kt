@@ -1,6 +1,6 @@
 package com.airy.mypids.data
 
-import android.util.Log
+import com.airy.mypids.pids.StationStatus
 
 private const val TAG = "StationListInfo"
 data class StationListInfo(
@@ -16,14 +16,12 @@ data class StationListInfo(
     val firstStation = stations.first()
     val terminal = stations.last()
 
-    operator fun get(num:Int) = stations[num]
-
     fun isLastStation(): Boolean = currIdx == stations.size-1
 
-    fun nextStation(){
-        if (isLastStation()) return
-        currIdx++
-        Log.d(TAG, "nextStation: $currIdx")
-        Log.d(TAG, "nextStation: ${currStation.name}")
+    operator fun get(num:Int) = stations[num]
+
+    fun nextStation(): Int{
+        if (!isLastStation()) currIdx++
+        return currIdx
     }
 }

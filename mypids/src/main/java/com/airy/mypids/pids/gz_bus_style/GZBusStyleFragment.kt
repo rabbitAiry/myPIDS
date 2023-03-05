@@ -10,7 +10,7 @@ import com.airy.mypids.data.StationListInfo
 import com.airy.mypids.databinding.FragmentPidsGzBusStyleBinding
 import com.airy.mypids.pids.RunStopPostStartPids
 
-class GZBusStyleFragment(context: Context, private val lineInfo: LineInfo, stations: StationListInfo) : RunStopPostStartPids(context, stations) {
+class GZBusStyleFragment(context: Context, private val lineInfo: LineInfo, stations: StationListInfo) : RunStopPostStartPids(stations) {
     private var _binding: FragmentPidsGzBusStyleBinding? = null
     private val binding get() = _binding!!
     override fun getPidsStyleName(): String = "广州公交风格"
@@ -41,9 +41,9 @@ class GZBusStyleFragment(context: Context, private val lineInfo: LineInfo, stati
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        // TODO
+    ): View? {
         _binding = FragmentPidsGzBusStyleBinding.inflate(inflater, container, false)
+//        if(_binding==null)return null
         binding.listStations.post {
             val layout = binding.listStations
             layout.stations = stations

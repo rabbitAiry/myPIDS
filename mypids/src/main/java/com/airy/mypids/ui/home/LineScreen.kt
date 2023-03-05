@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.airy.mypids.LineConfig
-import com.airy.mypids.viewmodels.PidsData
+import com.airy.mypids.data.PidsData
 import com.airy.mypids.ui.components.ConfigRowOfContent
 import com.airy.mypids.ui.components.FullWarningText
 import com.airy.mypids.ui.components.NextStepButton

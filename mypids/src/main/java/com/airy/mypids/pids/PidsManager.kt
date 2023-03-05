@@ -5,12 +5,11 @@ import android.util.Log
 import com.airy.mypids.data.LineInfo
 import com.airy.mypids.data.StationListInfo
 import com.airy.mypids.pids.gz_bus_style.GZBusStyleFragment
-import com.airy.mypids.pids.vertical_style.VerticalPidsFragment
 
 private const val TAG = "PidsManager"
 object PidsManager {
     private val pidsNameMap : HashMap<String, PidsInfo> = hashMapOf(
-        "基础竖向风格" to PidsInfo(VerticalPidsFragment::class.java, false),
+//        "基础竖向风格" to PidsInfo(VerticalPidsFragment::class.java, false),
         "广州公交风格" to PidsInfo(GZBusStyleFragment::class.java, true)
     )
 

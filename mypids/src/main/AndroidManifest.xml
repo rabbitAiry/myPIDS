@@ -17,10 +17,6 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.MyPIDS">
         <activity
-            android:name=".PidsLandscapeActivity"
-            android:screenOrientation="landscape"
-            android:exported="false" />
-        <activity
             android:name=".HomeActivity"
             android:exported="true"
             android:label="@string/title_activity_home"
@@ -36,7 +32,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".PidsActivity"
+            android:name=".DisplayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
 
