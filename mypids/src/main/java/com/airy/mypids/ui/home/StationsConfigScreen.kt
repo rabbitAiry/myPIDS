@@ -5,8 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.airy.mypids.ui.components.ConfigRowOfSwitch
-import com.airy.mypids.ui.components.ConfigRowOfTextField
+import com.airy.pids_lib.ui.components.ConfigRowOfTextField
 
 @Composable
 fun StationsConfigScreen() {

@@ -1,7 +1,5 @@
 package com.airy.mypids.data
 
-import com.airy.mypids.pids.StationStatus
-
 class Station(
     val names: List<String>,
     val latitude: Double,
@@ -12,37 +10,10 @@ class Station(
     val openDoorSide: OpenDoorSide = OpenDoorSide.LEFT
 ){
     val name get() = names[0]
+
+    override fun toString(): String =
+        "Station(names=listOf(\"$name\"), latitude=$latitude, longitude=$longitude, interchanges=$interchanges)"
 }
-
-
-//): Parcelable {
-//    constructor(parcel: Parcel) : this(
-//        parcel.readString()!!,
-//        parcel.readDouble(),
-//        parcel.readDouble()
-//    ) {
-//    }
-//
-//    override fun writeToParcel(parcel: Parcel, flags: Int) {
-//        parcel.writeString(name)
-//        parcel.writeDouble(latitude)
-//        parcel.writeDouble(longitude)
-//    }
-//
-//    override fun describeContents(): Int {
-//        return 0
-//    }
-//
-//    companion object CREATOR : Parcelable.Creator<Station> {
-//        override fun createFromParcel(parcel: Parcel): Station {
-//            return Station(parcel)
-//        }
-//
-//        override fun newArray(size: Int): Array<Station?> {
-//            return arrayOfNulls(size)
-//        }
-//    }
-//}
 
 enum class OpenDoorSide{
     LEFT, RIGHT, BOTH, NONE

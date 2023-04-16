@@ -15,8 +15,6 @@ import kotlinx.coroutines.withContext
 private const val TAG = "BaiduMapLineRepository"
 
 class LineRepository {
-    private val mBusLineSearch = BusLineSearch.newInstance()
-
     suspend fun lineSearch(cityText: String, uid: String): RawBaiduMapLineJson? {
         return withContext(Dispatchers.IO) {
             val url = getLineSearchUrl(cityText, uid)
@@ -36,9 +34,5 @@ class LineRepository {
         parser.a(SearchType.o)
         val req = b(option)
         return req.a(parser.a())
-    }
-
-    fun free() {
-        mBusLineSearch.destroy()
     }
 }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.airy.mypids.data.LineInfo
-import com.airy.mypids.data.StationListInfo
 import com.airy.mypids.databinding.FragmentPidsGzBusStyleBinding
 import com.airy.mypids.pids.RunStopPostStartPids
 

@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airy.mypids.DisplayActivity
 import com.airy.mypids.pids.PidsManager
-import com.airy.mypids.ui.components.ConfigRowOfRadioGroup
-import com.airy.mypids.ui.components.RowWarningText
-import com.airy.mypids.ui.components.TitleCard
+import com.airy.pids_lib.ui.components.ConfigRowOfRadioGroup
+import com.airy.pids_lib.ui.components.RowWarningText
+import com.airy.pids_lib.ui.components.TitleCard
 import com.airy.mypids.data.PidsData
 
 @Composable
@@ -29,9 +29,6 @@ fun MainScreen(pids: PidsData, scrollState: ScrollState, context: Context, onLin
     ) {
         TitleCard(title = "线路") {
             LineCard(pids, onLineButtonClick)
-        }
-        TitleCard(title = "pids风格") {
-            StyleCard(pids)
         }
         StartPidsButton(
             context,

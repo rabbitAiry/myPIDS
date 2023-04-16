@@ -21,12 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.airy.mypids.LineConfig
 import com.airy.mypids.data.PidsData
-import com.airy.mypids.ui.components.ConfigRowOfContent
-import com.airy.mypids.ui.components.FullWarningText
-import com.airy.mypids.ui.components.NextStepButton
+import com.airy.pids_lib.ui.components.ConfigRowOfContent
+import com.airy.pids_lib.ui.components.FullWarningText
 import com.airy.mypids.viewmodels.LineSearchViewModel
+import com.airy.pids_lib.ui.components.NextStepButton
 
 private const val TAG = "LineScreen"
 
@@ -50,16 +49,15 @@ fun LineScreen(pids: PidsData, navController: NavHostController) {
         }
         NextStepButton(
             enabled = lineHasChosen,
-            navController = navController,
-            route = LineConfig.route
+            onClick = {
+
+            }
         )
     }
 }
 
 @Composable
 fun SearchBar(vm: LineSearchViewModel) {
-    val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
     Row{
         val context = LocalContext.current
         ConfigRowOfContent(configTitle = "城市、\n线路名称") { modifier ->

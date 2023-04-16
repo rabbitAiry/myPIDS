@@ -4,10 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -19,18 +17,42 @@ import com.airy.mypids.pids.StationStatus
 import com.airy.mypids.ui.theme.light_blue_100
 import com.airy.mypids.ui.theme.light_blue_400
 import com.airy.mypids.ui.theme.light_blue_500
+import com.airy.mypids.ui.theme.light_blue_600
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @Composable
 fun Station(
     name: String,
     status: StationStatus
 ) {
+    var stationColor by remember{ mutableStateOf(Color.Transparent) }
+    var backgroundColor by remember { mutableStateOf(Color.Transparent) }
+    LaunchedEffect(key1 = status){
+        when(status){
+            StationStatus.ARRIVED -> {
+                stationColor = light_blue_400
+                backgroundColor = Color.Transparent
+            }
+            StationStatus.CURR_ARRIVED -> {
+                stationColor = light_blue_600
+                backgroundColor = light_blue_100
+            }
+            StationStatus.CURR_UNREACHED -> {
+                backgroundColor = light_blue_100
+                delay(10000)
+            }
+            StationStatus.UNREACHED -> {
+                stationColor = Color.Transparent
+                backgroundColor = Color.Transparent
+            }
+        }
+    }
     Row(
         Modifier
             .height(50.dp)
             .fillMaxWidth()
-            .background(if (status == StationStatus.CURR) light_blue_100 else Color.White)
+            .background(if (status == StationStatus.CURR_UNREACHED || status == StationStatus.CURR_ARRIVED) light_blue_100 else Color.White)
     ) {
         StationIndicator(status)
         Text(
@@ -70,5 +92,5 @@ fun StationIndicator(status: StationStatus) {
 @Preview
 @Composable
 fun PreviewStation(){
-    Station(name = "远安路", status = StationStatus.CURR)
+    Station(name = "远安路", status = StationStatus.CURR_UNREACHED)
 }

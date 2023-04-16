@@ -1,6 +1,5 @@
 package com.airy.mypids.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,31 +12,31 @@ import com.airy.mypids.pids.StationStatus
 private const val TAG = "DisplayViewModel"
 
 class DisplayViewModel : ViewModel() {
-    val stationStatus = MutableList(PidsData.stationListInfo!!.stations.size) {
-        val currIdx = PidsData.stationListInfo!!.currIdx
-        mutableStateOf(
-            when {
-                it > currIdx -> StationStatus.UNREACHED
-                it == currIdx -> StationStatus.CURR
-                else -> StationStatus.ARRIVED
-            }
-        )
-    }
+    val stationStates =
+        MutableList(PidsData.stationListInfo!!.stations.size) { StationStatus.UNREACHED }.toMutableStateList()
+
+    val currStationIdx get() = PidsData.stationListInfo!!.currIdx
+
+    val notice = "尊老爱幼是中华民族的传统美德，请您为有需要的乘客让座，谢谢！"
 
     var pidsStatus by mutableStateOf(PidsStatus.BUS_STATION_ARRIVED)
 
     fun nextStation() {
-        val currIdx = PidsData.stationListInfo!!.nextStation()
-        stationStatus[currIdx].value = StationStatus.CURR
-        stationStatus[currIdx - 1].value = StationStatus.ARRIVED
-        Log.d(TAG, "nextStation: $currIdx")
+        PidsData.stationListInfo!!.nextStation()
+        stationStates[currStationIdx] = StationStatus.CURR_ARRIVED
+        stationStates[currStationIdx - 1] = StationStatus.ARRIVED
     }
 
     fun stationArrived() {
         pidsStatus = PidsStatus.BUS_STATION_ARRIVED
+        stationStates[currStationIdx] = StationStatus.CURR_ARRIVED
     }
 
     fun busRun() {
-        pidsStatus = PidsStatus.BUS_RUNNING
+        if (pidsStatus != PidsStatus.BUS_RUNNING) {
+            nextStation()
+            pidsStatus = PidsStatus.BUS_RUNNING
+            stationStates[currStationIdx] = StationStatus.CURR_UNREACHED
+        }
     }
 }

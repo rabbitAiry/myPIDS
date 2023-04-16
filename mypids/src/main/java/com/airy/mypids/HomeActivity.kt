@@ -16,12 +16,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.airy.mypids.ui.components.ScalableTopBar
 import com.airy.mypids.ui.home.LineConfigScreen
 import com.airy.mypids.ui.home.LineScreen
 import com.airy.mypids.ui.home.MainScreen
 import com.airy.mypids.ui.theme.MyPIDSTheme
 import com.airy.mypids.data.PidsData
+import com.airy.pids_lib.ui.components.ScalableTopBar
 
 
 private const val TAG = "HomeActivity"

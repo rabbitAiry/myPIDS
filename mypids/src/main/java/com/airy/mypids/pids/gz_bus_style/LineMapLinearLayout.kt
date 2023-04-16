@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.core.view.get
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
-import com.airy.mypids.data.StationListInfo
 import com.airy.mypids.pids.gz_bus_style.FlowingText.Status
 
 class LineMapLinearLayout @JvmOverloads constructor(

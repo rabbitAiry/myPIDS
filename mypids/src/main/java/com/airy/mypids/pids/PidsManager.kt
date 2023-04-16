@@ -3,7 +3,6 @@ package com.airy.mypids.pids
 import android.content.Context
 import android.util.Log
 import com.airy.mypids.data.LineInfo
-import com.airy.mypids.data.StationListInfo
 import com.airy.mypids.pids.gz_bus_style.GZBusStyleFragment
 
 private const val TAG = "PidsManager"

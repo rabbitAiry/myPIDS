@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BusPids</string>
+    <string name="title_activity_pids">PidsActivity</string>
+</resources>

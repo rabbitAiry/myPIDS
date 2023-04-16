@@ -14,3 +14,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "myPIDS"
 include ':mypids'
+include ':buspids'
+include ':pids_lib'
+include ':passengers_pids'

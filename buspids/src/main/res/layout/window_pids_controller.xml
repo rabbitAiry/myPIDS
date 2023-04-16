@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp">
+
+    <com.airy.buspids.ui.views.PidsControllerWindowView
+        android:id="@+id/window_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_next_station"
+            style="@style/helper_button"
+            android:text="下一站" />
+
+        <Button
+            android:id="@+id/button_arrive"
+            style="@style/helper_button"
+            android:text="到站" />
+
+        <Button
+            android:id="@+id/button_drive"
+            style="@style/helper_button"
+            android:layout_marginRight="10dp"
+            android:text="行驶" />
+
+    </com.airy.buspids.ui.views.PidsControllerWindowView>
+
+</androidx.cardview.widget.CardView>

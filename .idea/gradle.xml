@@ -7,12 +7,14 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="$USER_HOME$/.gradle/wrapper/dists/gradle-3.3-all/55gk2rcmfc6p2dg9u9ohc3hw9/gradle-3.3" />
-        <option name="gradleJvm" value="11" />
+        <option name="gradleJvm" value="17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/buspids" />
             <option value="$PROJECT_DIR$/mypids" />
+            <option value="$PROJECT_DIR$/passengers_pids" />
+            <option value="$PROJECT_DIR$/pids_lib" />
           </set>
         </option>
       </GradleProjectSettings>

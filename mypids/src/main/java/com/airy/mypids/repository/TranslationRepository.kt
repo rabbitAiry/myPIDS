@@ -1,8 +1,6 @@
 package com.airy.mypids.repository
 
-import android.util.Log
 import com.airy.mypids.data.Station
-import com.airy.mypids.data.StationListInfo
 import com.airy.mypids.data.TranslateResult
 import com.airy.mypids.utils.responseViaOkHttp
 import com.google.gson.Gson

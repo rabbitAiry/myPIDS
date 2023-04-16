@@ -83,5 +83,5 @@ class DisplayActivity : AppCompatActivity() {
 
 @Composable
 fun DisplayUi(vm: DisplayViewModel) {
-    VerticalPidsScreen()
+    VerticalPidsScreen(vm)
 }

@@ -1,8 +1,5 @@
 package com.airy.mypids.pids
 
-import android.content.Context
-import com.airy.mypids.data.StationListInfo
-
 /**
  * 该类负责实现pids状态切换的逻辑，ui变化交由其子类负责
  * 该类表示会涉及以下状态的pids：BUS_STATION_ARRIVED, BUS_RUNNING
