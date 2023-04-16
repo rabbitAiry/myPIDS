@@ -51,7 +51,7 @@ fun DescriptionText(description: String?) {
 fun ConfigRowOfTextField(
     configTitle: String,
     value: String,
-    configDescription: String?,
+    configDescription: String? = null,
     onValueChange: (String) -> Unit
 ) {
     ConfigRowOfContent(configTitle = configTitle) {

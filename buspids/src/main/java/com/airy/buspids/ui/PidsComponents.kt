@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.airy.pids_lib.data.LineInfo
 import com.airy.pids_lib.data.Station
+import com.airy.pids_lib.ui.components.SummaryText
 import com.airy.pids_lib.ui.golden_500
 import com.airy.pids_lib.ui.light_gray_200
 import kotlinx.coroutines.delay
@@ -49,19 +50,4 @@ fun LineSummaryBar(
 @Composable
 fun IllustrationBar(modifier: Modifier = Modifier) {
     Text(text = "预计到达时间 E.T.A.", modifier.background(light_gray_200, RoundedCornerShape(50)).padding(4.dp))
-}
-
-
-@Composable
-fun SummaryText(text: String, isMain: Boolean = false) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.h5,
-        fontWeight = if (isMain) FontWeight.Medium else null
-    )
-}
-
-@Composable
-fun DescriptionText(text: String, modifier: Modifier) {
-    Text(text = text, modifier = modifier, style = MaterialTheme.typography.h6)
 }

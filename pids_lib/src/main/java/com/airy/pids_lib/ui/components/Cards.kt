@@ -1,8 +1,10 @@
 package com.airy.pids_lib.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -40,10 +42,17 @@ fun TitleCard(title: String, content: @Composable () -> Unit) {
     }
 }
 
-@Preview
 @Composable
-fun PreviewConfigCard(){
-    TitleCard(title = "Test") {
-        Text(text = "好一朵迎春花啊，人人都爱他")
+fun ContentCard(strokeColor: Color = Color.DarkGray, maxHeight: Int = 240, content: @Composable () -> Unit){
+    Card(
+        modifier = Modifier
+            .padding(20.dp)
+            .heightIn(min = 100.dp, max = maxHeight.dp)
+            .fillMaxWidth()
+            .padding(10.dp),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(2.dp, strokeColor),
+    ) {
+        content()
     }
 }

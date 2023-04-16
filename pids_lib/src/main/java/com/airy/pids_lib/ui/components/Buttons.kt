@@ -14,10 +14,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ColumnScope.NextStepButton(
+    text: String = "下一步",
     enabled: Boolean,
     onClick: () -> Unit
 ) {
-    StepButton(enabled = enabled, text = "下一步", onClick)
+    StepButton(enabled = enabled, text = text, onClick)
 }
 
 @Composable

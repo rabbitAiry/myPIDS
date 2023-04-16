@@ -12,6 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/buspids" />
+            <option value="$PROJECT_DIR$/driver_pids" />
             <option value="$PROJECT_DIR$/mypids" />
             <option value="$PROJECT_DIR$/passengers_pids" />
             <option value="$PROJECT_DIR$/pids_lib" />

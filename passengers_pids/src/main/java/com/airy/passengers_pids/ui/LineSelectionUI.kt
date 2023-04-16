@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airy.passengers_pids.PassengerViewModel
 import com.airy.pids_lib.ui.components.ConfigRowOfContent
+import com.airy.pids_lib.ui.components.ContentCard
 import com.airy.pids_lib.ui.components.FullWarningText
 import com.airy.pids_lib.ui.components.NextStepButton
 
@@ -30,15 +31,7 @@ fun LineSelectionScreen(viewModel: PassengerViewModel = viewModel(), onNext: ()-
     Column(Modifier.fillMaxWidth()) {
         if (!lineHasChosen)
             SearchBar(viewModel)
-        Card(
-            modifier = Modifier
-                .padding(20.dp)
-                .heightIn(min = 100.dp, max = 240.dp)
-                .fillMaxWidth()
-                .padding(10.dp),
-            shape = RoundedCornerShape(10.dp),
-            border = BorderStroke(2.dp, strokeColor),
-        ) {
+        ContentCard(strokeColor) {
             Column(
                 Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
                 verticalArrangement = Arrangement.Center

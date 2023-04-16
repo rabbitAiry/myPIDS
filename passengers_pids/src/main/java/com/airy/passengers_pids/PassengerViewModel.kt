@@ -19,6 +19,7 @@ import com.baidu.mapapi.model.CoordUtil
 import kotlinx.coroutines.launch
 
 class PassengerViewModel : ViewModel(){
+    // LineSelection
     var line: LineInfo? = null
     var resultPoiList: List<PoiItem>? = null
 
@@ -30,6 +31,12 @@ class PassengerViewModel : ViewModel(){
     var poiSearchError: String? = null
 
     var lineSearchError: String? = null
+    // TerminalSelection
+    var startStationIdx: Int = 0
+    var destinationIdx: Int = 0
+    var waitStations: List<Int>? = null
+    var getOffRemind: Boolean = true
+
 
     fun searchLinePoi(onError:()->Unit){
         val city = searchCityText
