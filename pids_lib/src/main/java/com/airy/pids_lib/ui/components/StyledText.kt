@@ -35,11 +35,12 @@ fun RowScope.RowWarningText(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SummaryText(text: String, isMain: Boolean = false) {
+fun SummaryText(text: String, isMain: Boolean = false, isSingleLine: Boolean = true) {
     Text(
         text = text,
         style = MaterialTheme.typography.h5,
-        fontWeight = if (isMain) FontWeight.Medium else null
+        fontWeight = if (isMain) FontWeight.Medium else null,
+        maxLines = 1
     )
 }
 

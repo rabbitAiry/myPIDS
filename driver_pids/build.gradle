@@ -1,14 +1,16 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
-    namespace 'com.kyzh.driver_pids'
+    namespace 'com.airy.driver_pids'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.kyzh.driver_pids"
+        applicationId "com.airy.driver_pids"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -62,4 +64,11 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
     implementation project(path: ':pids_lib')
+
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+}
+
+kapt {
+    correctErrorTypes true
 }

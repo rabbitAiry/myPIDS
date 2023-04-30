@@ -13,7 +13,7 @@ data class LineInfo(
     // 站点列表
     var stations: List<Station>,
     // 站点涵括的语种
-    val languages: List<String>,
+    val languages: MutableList<String>,
     // 线路起始站点的位置，常用于区间车
     val startStationIdx:Int = 0,
     // 线路结束站点的位置，常用于区间车

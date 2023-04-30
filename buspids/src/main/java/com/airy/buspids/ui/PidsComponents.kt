@@ -3,12 +3,12 @@ package com.airy.buspids.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.airy.buspids.data.LocationInfo
 import com.airy.pids_lib.data.LineInfo
 import com.airy.pids_lib.data.Station
 import com.airy.pids_lib.ui.components.SummaryText
@@ -42,7 +42,7 @@ fun LineSummaryBar(
         SummaryText(text = lineName, isMain = true)
         Spacer(modifier = Modifier.width(24.dp))
         SummaryText(text = descriptionCn)
-        Spacer(modifier = Modifier.width(72.dp))
+        Spacer(modifier = Modifier.widthIn(min= 24.dp, max=72.dp))
         SummaryText(text = descriptionEn)
     }
 }

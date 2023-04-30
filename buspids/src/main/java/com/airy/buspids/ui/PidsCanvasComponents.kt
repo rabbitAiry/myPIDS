@@ -1,19 +1,22 @@
 package com.airy.buspids.ui
 
 import android.graphics.Paint
-import android.util.Log
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.NativeCanvas
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
-import com.airy.buspids.constants.UI_TAG
 import com.airy.pids_lib.data.LineInfo
+import com.airy.pids_lib.data.Station
 import com.airy.pids_lib.data.StationStatus
 import com.airy.pids_lib.ui.*
+import kotlin.math.min
 
 val textPaint = Paint().apply {
+    color = dark_gray_100.toArgb()
+    textSize = 80F
+}
+val textEnPaint = Paint().apply {
     color = dark_gray_100.toArgb()
     textSize = 80F
 }
@@ -27,6 +30,7 @@ val linePaint = Paint().apply {
 }
 val stationIndicatorPaint = Paint()
 
+const val factor = 0.8f
 
 fun drawHorizontalLineMap(
     canvas: NativeCanvas,
@@ -34,38 +38,35 @@ fun drawHorizontalLineMap(
     stationStates: List<StationStatus>,
     modeCn: Boolean,
     size: Size,
-    density: Float,
-    shine: Boolean
+    shine: Boolean,
+    forecastTimeList: List<Int>
 ) {
-    val singleTextSize = textPaint.measureText("口")
-    // TODO 单字大小映射padding: singleTextSize = 30
-    val layoutPadding = 16F
-    val metroPadding = 10F
-    val drawLineHeight = 10F
-    val stationIndicatorHeight = 6F
-    var xPos = layoutPadding
-    var yPos = layoutPadding
-    val factor = 0.8F
+    val singleTextSize = setProperTextSize(size, line.stations)
+    val metroPadding = singleTextSize / 3
+    linePaint.strokeWidth = singleTextSize * 0.6F
+    var xPos: Float = singleTextSize * 2F  // 腾出 1.732*singleTextSize 的地方画指示线
+    var yPos: Float = 0F
     val xOffset = singleTextSize * factor
     val yOffset = singleTextSize * factor * 1.732F
+    val iRadius = singleTextSize / 2
 
-    canvas.drawLine(0f, drawLineHeight, size.width, drawLineHeight, linePaint)
+    canvas.drawLine(0f, singleTextSize * 0.866f, size.width, singleTextSize * 0.866f, linePaint)
 
     for ((idx, station) in line.stations.withIndex()) {
-        val text = if (modeCn) station.name else station.englishName
         canvas.apply {
             save()
             rotate(60F)
-            drawCircle(xPos, yPos, 4F, stationIndicatorPaint.apply {
-                color = when(stationStates[idx]){
+            drawCircle(xPos + iRadius - singleTextSize*1.5F, yPos - iRadius, iRadius, stationIndicatorPaint.apply {
+                color = when (stationStates[idx]) {
                     StationStatus.UNREACHED -> golden_400
                     StationStatus.ARRIVED -> gray
                     StationStatus.CURR -> if (shine) golden_600 else golden_200
-                    else ->gray
+                    else -> gray
                 }.toArgb()
             })
-            drawText(text, 0, text.length, xPos, yPos, textPaint)
-            var xEx = xPos + textPaint.measureText(text)
+            val text = if (modeCn) "${forecastTimeList[idx]}分钟 ${station.name}" else "${forecastTimeList[idx]}min ${station.englishName}"
+            drawText(text, 0, text.length, xPos, yPos, if (modeCn) textPaint else textEnPaint)
+            var xEx = xPos + if (modeCn) textPaint.measureText(text) else textEnPaint.measureText(text)
             station.interchanges?.let { interchanges ->
                 for (interchange in interchanges) {
                     xEx += metroPadding
@@ -96,10 +97,9 @@ fun NativeCanvas.drawInterchange(
     lineColor: Color,
     singleTextSize: Float
 ): Float {
-    // TODO: 不要在这里处理文字
     val text = interchange.trim().replace("号线", "").replace("线", "")
     val width = metroTextPaint.measureText(text)
-    val textColor = if (lineColor.luminance() > 0.5) androidx.compose.ui.graphics.Color.Black else androidx.compose.ui.graphics.Color.White
+    val textColor = if (lineColor.luminance() > 0.5) Color.Black else Color.White
     val bgHeight = singleTextSize + 4F
     val bgWidth = (width + 4F).coerceAtLeast(bgHeight)
     val diff = bgWidth - width
@@ -108,8 +108,8 @@ fun NativeCanvas.drawInterchange(
         y - singleTextSize,
         x + bgWidth,
         y + 4F,
-        20F,
-        20F,
+        singleTextSize,
+        singleTextSize,
         metroBackgroundPaint.apply { color = lineColor.toArgb() })
     drawText(
         text,
@@ -119,4 +119,47 @@ fun NativeCanvas.drawInterchange(
         y - 2F,
         metroTextPaint.apply { color = textColor.toArgb() })
     return width + diff
+}
+
+/**
+ * 返回最佳字体大小
+ */
+private fun setProperTextSize(size: Size, stations: List<Station>): Float {
+    val lastStationLen = stations.last().name.length
+    val maxLen = stations.maxBy { it.name.length }.name.length
+    val widthFriendlySize = size.width / (2 * factor * (stations.size + 2) + lastStationLen / 2)
+    val heightFriendlySize = size.height / (2 + 0.866 * maxLen).toFloat()
+    val properSize = min(widthFriendlySize, heightFriendlySize)
+    val textSize = findTextSizeForSize(properSize)
+    textPaint.textSize = textSize
+    metroTextPaint.textSize = textSize - 2
+
+    val lastStationEnLen = stations.last().names[1].length
+    val maxEnLen = stations.maxBy { it.names[1].length }.names[1].length
+    val widthFriendlyEnSize = size.width / (2 * factor * stations.size + lastStationLen / 2)
+    val heightFriendlyEnSize = size.height-2*properSize / (0.866 * maxLen).toFloat()
+    val properEnSize = min(widthFriendlyEnSize, heightFriendlyEnSize)
+    textEnPaint.textSize = findTextSizeForSize(properEnSize, isEn = true)
+    return properSize
+}
+
+private fun findTextSizeForSize(size: Float, isEn: Boolean = false): Float {
+    var left = 1f
+    var right = 500f
+    val paint = Paint()
+    while (left < right) {
+        val mid = (left + right) / 2
+        paint.textSize = mid
+        val result = textSizeOnPaint(paint, isEn)
+        if (result > size) right = mid
+        else left = mid + 1
+    }
+    return left
+}
+
+/**
+ * 测量单个文字的宽度
+ */
+private fun textSizeOnPaint(paint: Paint, isEn: Boolean): Float {
+    return paint.measureText(if (isEn)"e" else "我")
 }

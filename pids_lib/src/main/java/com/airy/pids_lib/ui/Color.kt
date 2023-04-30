@@ -3,12 +3,16 @@ package com.airy.pids_lib.ui
 import androidx.compose.ui.graphics.Color
 
 val red_500 = Color(0xFFF44336)
+val red_600 = Color(0xFFE53935)
+
 val golden_100 = Color(0xFFFFE0B2)
 val golden_200 = Color(0xFFFFCC80)
 val golden_300 = Color(0xFFFFB74D)
 val golden_400 = Color(0xFFFFA726)
 val golden_500 = Color(0xFFFF9800)
 val golden_600 = Color(0xFFFB8C00)
+val golden_800 = Color(0xFFEF6C00)
+
 val light_blue_100 = Color(0xFFDBE4FD)
 val light_blue_400 = Color(0xFF8CAAF8)
 val light_blue_500 = Color(0xFF648BF1)

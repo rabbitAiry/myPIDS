@@ -18,6 +18,40 @@ import com.baidu.platform.core.d.i
 
 private const val TAG = "LineRepository"
 object LineRepository {
+    /* with flow
+        var poiResultList: List<PoiItem>? = null
+        var line: LineInfo? = null
+
+        private val _errors = MutableSharedFlow<String>()
+        val errors: SharedFlow<String>
+            get() = _errors.asSharedFlow()
+
+        suspend fun searchLinePoi(city: String, line: String): List<PoiItem>?{
+        if (poiResultList!=null) return poiResultList
+        return withContext(Dispatchers.IO) {
+            val url = getPoiLineSearchUrl(city, line)
+            try {
+                val rawPoiJson = Gson().fromJson(responseViaOkHttp(url), RawPoiJson::class.java)
+                if (rawPoiJson == null){
+                    _errors.emit("无法搜索")
+                } else if (rawPoiJson.results == null){
+                    _errors.emit("搜索错误: ${rawPoiJson.message}")
+                } else {
+                    poiResultList = rawPoiJson.results.filter {
+                        val tag = it.detail_info.tag
+                        tag?.contains("地铁线路") ?:false || tag?.contains("公交线路") ?:false
+                    }
+                }
+                poiResultList
+            } catch (e: Exception) {
+                _errors.emit("无法搜索")
+                Log.e(TAG, "linePoiSearch Cannot Search Error: $e")
+                null
+            }
+        }
+    }
+     */
+
     suspend fun searchLinePoi(city: String, line: String): RawPoiJson?{
         return withContext(Dispatchers.IO) {
             val url = getPoiLineSearchUrl(city, line)

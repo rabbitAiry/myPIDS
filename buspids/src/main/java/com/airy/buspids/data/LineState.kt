@@ -21,34 +21,33 @@ data class LineState(
             else -> StationStatus.ARRIVED
         }
     }
-){
+) {
     val stations get() = lineInfo.stations
     val firstStation = stations[lineInfo.startStationIdx]
     val lastStation = stations[lineInfo.endStationIdx]
     val currStation get() = stations[currIdx.value]
-    val nextStation get() = stations[currIdx.value+1]
+    val nextStation get() = stations[currIdx.value + 1]
 
-    fun isLastStation(): Boolean = currIdx.value == stations.size-1
+    fun isLastStation(): Boolean = currIdx.value == stations.size - 1
 
-    operator fun get(num:Int) = stations[num]
+    operator fun get(num: Int) = stations[num]
 
-    fun goNextStation(): Int{
-        if (!isLastStation()){
+    fun goNextStation(): LineState {
+        if (!isLastStation()) {
             currIdx.value++
             stationStates[currIdx.value] = StationStatus.CURR
-            stationStates[currIdx.value-1] = StationStatus.ARRIVED
+            stationStates[currIdx.value - 1] = StationStatus.ARRIVED
         }
-        return currIdx.value
+        return this
     }
 
-    fun stationArrived(){
+    fun stationArrived(): LineState {
         pidsStatus.value = PidsStatus.BUS_STATION_ARRIVED
+        return this
     }
 
-    fun busRun(){
-        if (pidsStatus.value != PidsStatus.BUS_RUNNING){
-            goNextStation()
-            pidsStatus.value = PidsStatus.BUS_RUNNING
-        }
+    fun busRun(): LineState {
+        pidsStatus.value = PidsStatus.BUS_RUNNING
+        return this
     }
 }

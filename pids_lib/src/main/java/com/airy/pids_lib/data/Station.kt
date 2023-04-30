@@ -1,7 +1,7 @@
 package com.airy.pids_lib.data
 
 class Station(
-    val names: List<String>,
+    val names: MutableList<String>,
     val latitude: Double,
     val longitude: Double,
     val interchanges: List<String>? = null,

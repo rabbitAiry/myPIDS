@@ -84,11 +84,6 @@ class PassengerViewModel : ViewModel(){
         }
     }
 
-    fun clearLine(){
-        line = null
-        resultPoiList = null
-    }
-
     private fun collectLineData(
         rawLine: RawBaiduMapLine
     ): LineInfo {
@@ -111,17 +106,23 @@ class PassengerViewModel : ViewModel(){
                     }
                 }
             }
-            val color = if (line_color!=null)parseColor(line_color) else null
+            val color = if (line_color!=null) parseColor(line_color) else null
             return LineInfo(
                 lineName = name,
                 rawLineName = getRawLineName(name),
                 lineDirection = stationList.last().name,
                 stations = stationList,
-                languages = listOf("zh"),
+                languages = mutableListOf("zh"),
                 lineId = name,
                 lineColor = color ?: Color.White,
                 otherLineColors = otherLineColors
             )
         }
+    }
+
+
+    fun clearLine(){
+        line = null
+        resultPoiList = null
     }
 }
