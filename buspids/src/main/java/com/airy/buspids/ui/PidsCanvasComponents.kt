@@ -6,19 +6,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.NativeCanvas
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
-import com.airy.pids_lib.data.LineInfo
 import com.airy.pids_lib.data.Station
-import com.airy.pids_lib.data.StationStatus
 import com.airy.pids_lib.ui.*
 import kotlin.math.min
 
 val textPaint = Paint().apply {
     color = dark_gray_100.toArgb()
-    textSize = 80F
 }
 val textEnPaint = Paint().apply {
     color = dark_gray_100.toArgb()
-    textSize = 80F
 }
 val metroTextPaint = Paint().apply {
     color = dark_gray_100.toArgb()
@@ -32,16 +28,19 @@ val stationIndicatorPaint = Paint()
 
 const val factor = 0.8f
 
+var singleTextSize = 0F
+
 fun drawHorizontalLineMap(
     canvas: NativeCanvas,
-    line: LineInfo,
-    stationStates: List<StationStatus>,
+    subStationList: List<Station>,
+    subCurrIdx: Int,
     modeCn: Boolean,
     size: Size,
     shine: Boolean,
-    forecastTimeList: List<Int>
+    subForecastTimeList: List<Int>?,
+    otherLineColors: Map<String, Color>,
 ) {
-    val singleTextSize = setProperTextSize(size, line.stations)
+    if (singleTextSize == 0F) singleTextSize = setProperTextSize(size, subStationList)
     val metroPadding = singleTextSize / 3
     linePaint.strokeWidth = singleTextSize * 0.6F
     var xPos: Float = singleTextSize * 2F  // 腾出 1.732*singleTextSize 的地方画指示线
@@ -50,32 +49,36 @@ fun drawHorizontalLineMap(
     val yOffset = singleTextSize * factor * 1.732F
     val iRadius = singleTextSize / 2
 
+
     canvas.drawLine(0f, singleTextSize * 0.866f, size.width, singleTextSize * 0.866f, linePaint)
 
-    for ((idx, station) in line.stations.withIndex()) {
+    for ((idx, station) in subStationList.withIndex()) {
         canvas.apply {
             save()
             rotate(60F)
             drawCircle(xPos + iRadius - singleTextSize*1.5F, yPos - iRadius, iRadius, stationIndicatorPaint.apply {
-                color = when (stationStates[idx]) {
-                    StationStatus.UNREACHED -> golden_400
-                    StationStatus.ARRIVED -> gray
-                    StationStatus.CURR -> if (shine) golden_600 else golden_200
-                    else -> gray
+                color = when{
+                    idx > subCurrIdx -> golden_400
+                    idx < subCurrIdx -> gray
+                    else -> if (shine) golden_600 else golden_200
                 }.toArgb()
             })
-            val text = if (modeCn) "${forecastTimeList[idx]}分钟 ${station.name}" else "${forecastTimeList[idx]}min ${station.englishName}"
+            val text = if (subForecastTimeList != null && idx >= subCurrIdx){
+                if (modeCn) "${subForecastTimeList[idx]/60}分钟 ${station.name}" else "${subForecastTimeList[idx]/60}min ${station.englishName}"
+            }else {
+                if (modeCn) station.name else station.englishName
+            }
             drawText(text, 0, text.length, xPos, yPos, if (modeCn) textPaint else textEnPaint)
             var xEx = xPos + if (modeCn) textPaint.measureText(text) else textEnPaint.measureText(text)
             station.interchanges?.let { interchanges ->
                 for (interchange in interchanges) {
                     xEx += metroPadding
                     xEx += drawInterchange(
-                        xEx,
-                        yPos,
-                        interchange,
-                        line.getLineColor(interchange),
-                        singleTextSize
+                        x = xEx,
+                        y = yPos,
+                        interchange = interchange,
+                        lineColor = otherLineColors[interchange] ?: gray,
+                        singleTextSize = singleTextSize
                     )
                 }
             }
@@ -125,8 +128,8 @@ fun NativeCanvas.drawInterchange(
  * 返回最佳字体大小
  */
 private fun setProperTextSize(size: Size, stations: List<Station>): Float {
-    val lastStationLen = stations.last().name.length
-    val maxLen = stations.maxBy { it.name.length }.name.length
+    val lastStationLen = stations.last().name.length+3
+    val maxLen = stations.maxBy { it.name.length }.name.length+3
     val widthFriendlySize = size.width / (2 * factor * (stations.size + 2) + lastStationLen / 2)
     val heightFriendlySize = size.height / (2 + 0.866 * maxLen).toFloat()
     val properSize = min(widthFriendlySize, heightFriendlySize)
@@ -134,12 +137,12 @@ private fun setProperTextSize(size: Size, stations: List<Station>): Float {
     textPaint.textSize = textSize
     metroTextPaint.textSize = textSize - 2
 
-    val lastStationEnLen = stations.last().names[1].length
-    val maxEnLen = stations.maxBy { it.names[1].length }.names[1].length
-    val widthFriendlyEnSize = size.width / (2 * factor * stations.size + lastStationLen / 2)
-    val heightFriendlyEnSize = size.height-2*properSize / (0.866 * maxLen).toFloat()
+    val lastStationEnLen = stations.last().names[1].length+5
+    val maxEnLen = stations.maxBy { it.names[1].length }.names[1].length+5
+    val widthFriendlyEnSize = size.width / (2 * factor * stations.size + lastStationEnLen / 2)
+    val heightFriendlyEnSize = size.height-2*properSize / (0.866 * maxEnLen).toFloat()
     val properEnSize = min(widthFriendlyEnSize, heightFriendlyEnSize)
-    textEnPaint.textSize = findTextSizeForSize(properEnSize, isEn = true)
+    textEnPaint.textSize = findTextSizeForSize(properEnSize)
     return properSize
 }
 

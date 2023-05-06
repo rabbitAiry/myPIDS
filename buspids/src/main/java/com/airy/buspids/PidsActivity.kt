@@ -35,11 +35,15 @@ class PidsActivity : ComponentActivity() {
         setFullScreen()
 
         vm = ViewModelProvider(this)[PidsViewModel::class.java]
+
         setContent {
             MyPIDSTheme {
                 var inDebug by remember { mutableStateOf(false) }
 
-                // A surface container using the 'background' color from the theme
+                LaunchedEffect(vm.shouldFinish){
+                    if (vm.shouldFinish) finish()
+                }
+
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()

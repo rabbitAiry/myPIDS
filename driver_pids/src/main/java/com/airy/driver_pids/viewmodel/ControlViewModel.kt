@@ -2,10 +2,10 @@ package com.airy.driver_pids.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.airy.driver_pids.repository.LoginRepository
 import com.airy.pids_lib.bluetooth.BluetoothController
 import com.airy.pids_lib.bluetooth.data.BluetoothDeviceDomain
 import com.airy.pids_lib.bluetooth.data.ConnectionResult
-import com.airy.pids_lib.bluetooth.data.DriverLineMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -15,6 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ControlViewModel @Inject constructor(
     private val bluetoothController: BluetoothController,
+    private val loginRepository: LoginRepository
 ): ViewModel() {
     private val _state = MutableStateFlow(ControlUiState())
     val state = combine(
@@ -60,9 +61,9 @@ class ControlViewModel @Inject constructor(
         ) }
     }
 
-    fun sendMessage(message: String) {
+    private fun sendDriverNameMessage() {
         viewModelScope.launch {
-            bluetoothController.trySendMessage(message)
+            bluetoothController.trySendMessage(loginRepository.driverName ?: "测试")
         }
     }
 
@@ -73,6 +74,7 @@ class ControlViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        disconnectFromDevice()
         release()
     }
 
@@ -80,16 +82,19 @@ class ControlViewModel @Inject constructor(
         return onEach { result ->
             when(result) {
                 ConnectionResult.ConnectionEstablished -> {
+                    sendDriverNameMessage()
                     _state.update { it.copy(
+                        errorMessage = null,
                         isConnected = true,
                         isConnecting = false,
-                        errorMessage = null
+                        onSendWaiting = true
                     ) }
                 }
                 is ConnectionResult.TransferSucceeded -> {
                     _state.update { it.copy(
                         onLineSearchDone = true
                     ) }
+                    disconnectFromDevice()
                     release()
                 }
                 is ConnectionResult.Error -> {

@@ -5,7 +5,7 @@ package com.airy.buspids.data
  * 服务器会以此数据结构指定线路
  */
 data class LineTagData(
-    val uid: String,
+    val lineId: String,
     val startIdx: Int,
     val endIdx: Int,
     val city: String = "广州",

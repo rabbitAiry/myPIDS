@@ -14,7 +14,7 @@ import java.io.IOException
 class BluetoothDataTransferService(
     private val socket: BluetoothSocket
 ) {
-    fun listenForIncomingMessages(): Flow<DriverLineMessage> {
+    fun listenForIncomingMessages(): Flow<String> {
         return flow {
             if(!socket.isConnected) {
                 return@flow
@@ -30,7 +30,7 @@ class BluetoothDataTransferService(
                 emit(
                     buffer.decodeToString(
                         endIndex = byteCount
-                    ).toBluetoothMessage()
+                    )
                 )
             }
         }.flowOn(Dispatchers.IO)

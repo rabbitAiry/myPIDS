@@ -5,66 +5,104 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 import com.airy.pids_lib.ui.components.ConfigRowOfTextField
 import com.airy.pids_lib.ui.components.ScalableTopBar
 import com.airy.driver_pids.ui.theme.MyPIDSTheme
+import com.airy.driver_pids.viewmodel.LoginViewModel
+import com.airy.pids_lib.ui.Black50
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
+    private val viewModel: LoginViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyPIDSTheme {
-                // A surface container using the 'background' color from the theme
+                val scrollState = rememberScrollState()
+                var driverName by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+                var host by remember { mutableStateOf("192.168.5.6") }
+                var inDebug by remember { mutableStateOf(false) }
+
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures(onDoubleTap = { inDebug = !inDebug })
+                        },
                     color = MaterialTheme.colors.background
                 ) {
-                    val scrollState = rememberScrollState()
-                    var credit by remember { mutableStateOf("") }
-                    var key by remember { mutableStateOf("") }
-
-                    Scaffold(topBar = {
-                        ScalableTopBar(
-                            title = "首次登录",
-                            scrollState = scrollState,
-                            context = applicationContext
-                        )
-                    }) { innerPadding ->
-                        Column(Modifier.padding(innerPadding)) {
-                            ConfigRowOfTextField(
-                                configTitle = "账号",
-                                value = credit,
-                                onValueChange = { credit = it }
+                    LaunchedEffect(key1 = viewModel.isLogin) {
+                        if (viewModel.isLogin) {
+                            startActivity(
+                                Intent(
+                                    this@LoginActivity,
+                                    ControlActivity::class.java
+                                )
                             )
-                            ConfigRowOfTextField(
-                                configTitle = "密码",
-                                value = key,
-                                onValueChange = { key = it })
-                            Spacer(modifier = Modifier.weight(1f))
-                            Button(onClick = {
-                                if (key == "123"){
-                                    startActivity(
-                                        Intent(
-                                            this@LoginActivity,
-                                            ControlActivity::class.java
-                                        )
-                                    )
-                                } else {
-                                    Toast.makeText(this@LoginActivity, "wrong password", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    }
+
+                    LaunchedEffect(key1 = viewModel.isErrorLogin) {
+                        if (viewModel.isErrorLogin) {
+                            Toast.makeText(this@LoginActivity, "密码错误", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    Box(){
+                        Scaffold(topBar = {
+                            ScalableTopBar(
+                                title = "首次登录",
+                                scrollState = scrollState,
+                                context = applicationContext
+                            )
+                        }) { innerPadding ->
+                            Column(Modifier.padding(innerPadding)) {
+                                ConfigRowOfTextField(
+                                    configTitle = "账号",
+                                    value = driverName,
+                                    onValueChange = { driverName = it }
+                                )
+                                ConfigRowOfTextField(
+                                    configTitle = "密码",
+                                    value = password,
+                                    onValueChange = { password = it })
+                                Spacer(modifier = Modifier.weight(1f))
+                                Button(modifier = Modifier.padding(40.dp), onClick = {
+                                    viewModel.login(driverName, password, host)
+                                }) {
+                                    Text(text = "确定")
                                 }
-                            }) {
-                                Text(text = "确定")
+                            }
+                        }
+                        if (inDebug){
+                            Row(
+                                Modifier
+                                    .fillMaxSize()
+                                    .background(Black50)
+                                    .padding(30.dp)
+                            ) {
+                                ConfigRowOfTextField(
+                                    configTitle = "Host",
+                                    value = host,
+                                    onValueChange = { host = it })
+
+                                Button(onClick = { viewModel.isLogin = true }) {
+                                    Text("强制登录")
+                                }
                             }
                         }
                     }

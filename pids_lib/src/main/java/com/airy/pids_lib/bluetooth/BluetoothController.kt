@@ -5,20 +5,25 @@ import android.bluetooth.*
 import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.util.Log
 import com.airy.pids_lib.bluetooth.data.BluetoothDeviceDomain
 import com.airy.pids_lib.bluetooth.data.DriverLineMessage
 import com.airy.pids_lib.bluetooth.data.ConnectionResult
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
+
+private const val TAG = "WaitingViewModel"
 
 @SuppressLint("MissingPermission")
-class BluetoothController(
-    private val context: Context
-){
+class BluetoothController @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     private val bluetoothManager by lazy {
         context.getSystemService(BluetoothManager::class.java)
@@ -48,12 +53,12 @@ class BluetoothController(
     private val foundDeviceReceiver = FoundDeviceReceiver { device ->
         _scannedDevices.update { devices ->
             val newDevice = device.toBluetoothDeviceDomain()
-            if(newDevice in devices) devices else devices + newDevice
+            if (newDevice in devices) devices else devices + newDevice
         }
     }
 
     private val bluetoothStateReceiver = BluetoothStateReceiver { isConnected, bluetoothDevice ->
-        if(bluetoothAdapter?.bondedDevices?.contains(bluetoothDevice) == true) {
+        if (bluetoothAdapter?.bondedDevices?.contains(bluetoothDevice) == true) {
             _isConnected.update { isConnected }
         } else {
             CoroutineScope(Dispatchers.IO).launch {
@@ -75,47 +80,36 @@ class BluetoothController(
                 addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
             }
         )
-    }
-
-    fun startDiscovery() {
-//        if(!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) {
-//            return
-//        }
-
         context.registerReceiver(
             foundDeviceReceiver,
             IntentFilter(BluetoothDevice.ACTION_FOUND)
         )
+    }
 
+    fun startDiscovery() {
+        Log.d(TAG, "startDiscovery: ")
         updatePairedDevices()
-
         bluetoothAdapter?.startDiscovery()
     }
 
     fun stopDiscovery() {
-//        if(!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) {
-//            return
-//        }
-
+        Log.d(TAG, "stopDiscovery: ")
         bluetoothAdapter?.cancelDiscovery()
     }
 
     fun startBluetoothServer(): Flow<ConnectionResult> {
         return flow {
-//            if(!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
-//                throw SecurityException("No BLUETOOTH_CONNECT permission")
-//            }
-
+            Log.d(TAG, "startBluetoothServer: ")
             currentServerSocket = bluetoothAdapter?.listenUsingRfcommWithServiceRecord(
-                "chat_service",
+                "pids_service",
                 UUID.fromString(SERVICE_UUID)
             )
 
             var shouldLoop = true
-            while(shouldLoop) {
+            while (shouldLoop) {
                 currentClientSocket = try {
                     currentServerSocket?.accept()
-                } catch(e: IOException) {
+                } catch (e: IOException) {
                     shouldLoop = false
                     null
                 }
@@ -128,23 +122,21 @@ class BluetoothController(
                     emitAll(
                         service
                             .listenForIncomingMessages()
-                            .map {
-                                ConnectionResult.TransferSucceeded(it)
+                            .map { str ->
+                                ConnectionResult.TransferSucceeded(str)
                             }
                     )
                 }
             }
         }.onCompletion {
+            Log.d(TAG, "startBluetoothServer#onCompletion")
             closeConnection()
         }.flowOn(Dispatchers.IO)
     }
 
     fun connectToDevice(device: BluetoothDeviceDomain): Flow<ConnectionResult> {
         return flow {
-//            if(!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
-//                throw SecurityException("No BLUETOOTH_CONNECT permission")
-//            }
-
+            Log.d(TAG, "connectToDevice: ")
             currentClientSocket = bluetoothAdapter
                 ?.getRemoteDevice(device.address)
                 ?.createRfcommSocketToServiceRecord(
@@ -164,26 +156,25 @@ class BluetoothController(
                                 .map { ConnectionResult.TransferSucceeded(it) }
                         )
                     }
-                } catch(e: IOException) {
+                } catch (e: IOException) {
                     socket.close()
                     currentClientSocket = null
                     emit(ConnectionResult.Error("Connection was interrupted"))
                 }
             }
         }.onCompletion {
+            Log.d(TAG, "connectToDevice#onCompletion")
             closeConnection()
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun trySendMessage(message: DriverLineMessage) {
-        dataTransferService?.sendMessage(message.toByteArray())
-    }
-
     suspend fun trySendMessage(message: String) {
+        Log.d(TAG, "trySendMessage: ")
         dataTransferService?.sendMessage(message.toByteArray())
     }
 
     fun closeConnection() {
+        Log.d(TAG, "closeConnection: ")
         currentClientSocket?.close()
         currentServerSocket?.close()
         currentClientSocket = null
@@ -191,25 +182,19 @@ class BluetoothController(
     }
 
     fun release() {
+        Log.d(TAG, "release: ")
         context.unregisterReceiver(foundDeviceReceiver)
         context.unregisterReceiver(bluetoothStateReceiver)
         closeConnection()
     }
 
     private fun updatePairedDevices() {
-//        if(!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
-//            return
-//        }
         bluetoothAdapter
             ?.bondedDevices
             ?.map { it.toBluetoothDeviceDomain() }
             ?.also { devices ->
                 _pairedDevices.update { devices }
             }
-    }
-
-    private fun hasPermission(permission: String): Boolean {
-        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     }
 
     companion object {

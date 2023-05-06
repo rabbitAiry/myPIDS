@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -94,6 +96,12 @@ class ControlActivity : ComponentActivity() {
             MyPIDSTheme {
                 val state by vm.state.collectAsState()
 
+                LaunchedEffect(key1 = state.errorMessage) {
+                    state.errorMessage?.let {
+                        Toast.makeText(this@ControlActivity, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
@@ -107,40 +115,35 @@ class ControlActivity : ComponentActivity() {
                             context = applicationContext
                         )
                     }) { innerPadding ->
-                        var selectedLine: DriverLineMessage? by remember {
-                            mutableStateOf(null)
-                        }
-
                         Column(Modifier.padding(innerPadding)) {
-                            TitleCard(title = "选择线路") {
-                                AccessibleLineBar(
-                                    state.accessibleLineMessages,
-                                    selectedLine
-                                ) { selectedLine = it }
-                            }
-                            TitleCard(title = "选择车辆") {
-                                BluetoothDeviceBar(state.pairedDevices, state.scannedDevices) {
-                                    vm.connectToDevice(
-                                        it
+                            TitleCard(title = "选择车辆", Modifier.padding(horizontal = 10.dp)) {
+                                if (state.onLineSearchDone) {
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(Icons.Default.Done, "", Modifier.padding(end = 10.dp))
+                                        Text(text = "已完成，可退出")
+                                    }
+                                } else if (state.onSendWaiting) {
+                                    CircularProgressIndicator(
+                                        Modifier
+                                            .padding(10.dp)
+                                            .size(40.dp)
                                     )
+                                    Text(text = "正在发送")
+                                } else if (state.isConnected) {
+                                    CircularProgressIndicator(
+                                        Modifier
+                                            .padding(10.dp)
+                                            .size(40.dp)
+                                    )
+                                    Text(text = "正在连接")
+                                } else {
+                                    BluetoothDeviceBar(state.pairedDevices, state.scannedDevices) {
+                                        vm.connectToDevice(it)
+                                    }
                                 }
-                            }
-                            Button(onClick = {
-                                if (selectedLine == null) {
-                                    Toast.makeText(
-                                        this@ControlActivity,
-                                        "请先选择线路",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else if (!state.isConnected){
-                                    Toast.makeText(
-                                        this@ControlActivity,
-                                        "请先连接车端",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else vm.sendMessage(selectedLine.toString())
-                            }) {
-                                Text(text = "发送")
                             }
                         }
                     }
@@ -149,26 +152,6 @@ class ControlActivity : ComponentActivity() {
         }
     }
 
-}
-
-
-@Composable
-fun AccessibleLineBar(
-    messages: List<DriverLineMessage>,
-    selectedLine: DriverLineMessage?,
-    onSelect: (DriverLineMessage) -> Unit
-) {
-    LazyColumn {
-        items(messages) {
-            Text(text = it.toString(), modifier = Modifier
-                .fillMaxWidth()
-                .background(if (selectedLine == it) Color.Yellow else Color.Transparent)
-                .clickable {
-                    onSelect(it)
-                })
-            Divider()
-        }
-    }
 }
 
 @Composable
@@ -180,7 +163,7 @@ fun BluetoothDeviceBar(
     LazyColumn {
         item {
             Text(
-                text = "已配对",
+                text = ">> 已配对",
                 modifier = Modifier.padding(16.dp)
             )
         }
@@ -196,7 +179,7 @@ fun BluetoothDeviceBar(
 
         item {
             Text(
-                text = "扫描结果",
+                text = ">> 扫描结果",
                 modifier = Modifier.padding(16.dp)
             )
         }

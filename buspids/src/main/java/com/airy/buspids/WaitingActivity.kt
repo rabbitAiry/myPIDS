@@ -2,6 +2,7 @@ package com.airy.buspids
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,6 +32,7 @@ import com.airy.pids_lib.ui.golden_200
 import com.airy.pids_lib.utils.setFullScreen
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "WaitingActivity"
 @AndroidEntryPoint
 class WaitingActivity : ComponentActivity() {
     private val vm: WaitingViewModel by viewModels()
@@ -49,7 +51,6 @@ class WaitingActivity : ComponentActivity() {
                 LaunchedEffect(key1 = state.isLineSearchDone) {
                     if(state.isLineSearchDone){
                         startActivity(Intent(this@WaitingActivity, PidsActivity::class.java))
-                        vm.disconnectFromDevice()
                     }
                 }
 
@@ -68,11 +69,6 @@ class WaitingActivity : ComponentActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        vm.startBluetoothServer()
-        vm.clearLine()
-    }
 }
 
 @Composable
@@ -96,6 +92,9 @@ fun Greeting(inDebug: Boolean, onSelectLine_debug: (LineTagData)->Unit) {
             ) {
                 Button(onClick = { onSelectLine_debug(LineTagData("e45505067cf66173911fc954", 16, 24)) }) {
                     Text(text = "B8 冼村->学院")
+                }
+                Button(onClick = { onSelectLine_debug(LineTagData("e45505067cf66173911fc954", 0, 30)) }) {
+                    Text(text = "B8 全线 棠德花园方向")
                 }
                 Button(onClick = {onSelectLine_debug(LineTagData("16de7aa315f7134fc2f1cfaa", 24, 43)) }) {
                     Text(text = "547 猎德大道北->奥体南路总站（优托邦）")

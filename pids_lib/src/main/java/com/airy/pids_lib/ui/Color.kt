@@ -22,6 +22,8 @@ val light_blue_800 = Color(0xFF3B6FF6)
 val light_gray_100 = Color(0xFFFEFEFE)
 val light_gray_200 = Color(0xFFC5C2C2)
 val gray = Color(0xFF888888)
+
+val Black50 = Color(0x80000000)
 val dark_gray_100 = Color(0xFF111111)
 val deep_blue_800 = Color(0xFF283593)
 val deep_blue_900 = Color(0xFF1A237E)

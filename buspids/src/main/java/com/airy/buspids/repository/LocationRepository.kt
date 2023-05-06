@@ -26,6 +26,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 private const val GEOFENCE_SERVICE = "baiduGeofenceService"
 private const val SCAN_DURATION = 5000
+private const val GEO_FENCE_SIZE = 50F
 private const val TAG = "Location"
 
 @Singleton
@@ -75,7 +76,7 @@ class LocationRepository @Inject constructor(@ApplicationContext private val con
                                     it.direction
                                 )
                             )
-                            logPosition("lat: ${it.latitude}, lon: ${it.longitude}, rad: ${it.radius}, dir: ${it.direction}, spd: ${it.speed}")
+                            logPosition("lat: ${it.latitude}, lon: ${it.longitude}, dir: ${it.direction}, spd: ${it.speed}")
                         }
                     }
                 }
@@ -99,7 +100,7 @@ class LocationRepository @Inject constructor(@ApplicationContext private val con
         for (station in stations){
             val lat = station.latitude
             val lon = station.longitude
-            geoFenceClient!!.addGeoFence(DPoint(lat, lon), GeoFenceClient.BD09LL, 100F, station.name)
+            geoFenceClient!!.addGeoFence(DPoint(lat, lon), GeoFenceClient.BD09LL, GEO_FENCE_SIZE, station.name)
         }
         geoFenceClient!!.createPendingIntent(GEOFENCE_SERVICE)
         val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION).apply {

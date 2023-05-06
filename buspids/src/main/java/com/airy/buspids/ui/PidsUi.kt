@@ -1,5 +1,6 @@
 package com.airy.buspids.ui
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -25,29 +26,30 @@ import com.airy.buspids.data.LocationInfo
 import com.airy.pids_lib.data.*
 import com.airy.pids_lib.ui.*
 import com.airy.pids_lib.ui.components.DescriptionText
+import com.airy.pids_lib.ui.components.SummaryText
 import com.baidu.mapapi.map.MapStatusUpdateFactory
 import com.baidu.mapapi.map.MapView
 import com.baidu.mapapi.map.MyLocationConfiguration
 import com.baidu.mapapi.map.MyLocationData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Collections
 
 const val SUMMARY_TEXT_SWITCH_DURATION = 4000L
-const val LIGHT_FLASH_DURATION = 1000L
+const val LIGHT_FLASH_DURATION = 800L
 const val SCROLL_DURATION = 4000L
 const val LANGUAGE_CHANGE_DURATION = 6000L
-const val SWITCH_ITEM_COUNT = 5
-const val SWITCH_MAP_DURATION = 20000L
+const val SWITCH_ITEMS = 5
 
 @Composable
 fun PidsUI(
     line: LineState,
     postList: List<Post>,
     locationInfo: LocationInfo?,
-    forecastTimeList: List<Int>
+    forecastTimeList: List<Int>?
 ) {
     Column {
-        if (line.pidsStatus.value == PidsStatus.BUS_STATION_ARRIVED) {
+        if (line.pidsStatus == PidsStatus.BUS_STATION_ARRIVED) {
             StationArrivedBar(
                 currStation = line.currStation,
                 modifier = Modifier
@@ -63,8 +65,7 @@ fun PidsUI(
         } else {
             StationListUI(
                 line.lineInfo,
-                line.currIdx.value,
-                line.stationStates,
+                line.currIdx,
                 postList,
                 Modifier.weight(1F),
                 forecastTimeList
@@ -79,29 +80,72 @@ fun PidsUI(
 }
 
 @Composable
+fun LineSummaryBar(
+    lineName: String, terminal: Station, nextStation: Station?
+) {
+    var descriptionCn by remember { mutableStateOf("") }
+    var descriptionEn by remember { mutableStateOf("") }
+    LaunchedEffect(nextStation) {
+        // 轮流展示下一站和终点站
+        while (true) {
+            descriptionCn = "${terminal.name}方向"
+            descriptionEn = "Towards: ${terminal.englishName}"
+            delay(SUMMARY_TEXT_SWITCH_DURATION)
+            descriptionCn = nextStation?.run { "下一站：${nextStation.name}" } ?: "已到达终点站"
+            descriptionEn = nextStation?.run {"Next: ${nextStation.englishName}"} ?: "Arrival of the Terminal"
+            delay(SUMMARY_TEXT_SWITCH_DURATION)
+        }
+    }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(golden_500)
+            .padding(horizontal = 24.dp, vertical = 12.dp)
+    ) {
+        SummaryText(text = lineName, isMain = true)
+        Spacer(modifier = Modifier.width(24.dp))
+        SummaryText(text = descriptionCn)
+        Spacer(modifier = Modifier.widthIn(min= 24.dp, max=72.dp))
+        SummaryText(text = descriptionEn)
+    }
+}
+
+@Composable
+fun IllustrationBar(modifier: Modifier = Modifier) {
+    Text(text = "预计到达时间 E.T.A.",
+        modifier
+            .background(light_gray_200, RoundedCornerShape(50))
+            .padding(6.dp))
+}
+
+@Composable
 fun StationListUI(
     line: LineInfo,
     currIdx: Int,
-    stationStates: List<StationStatus>,
     postList: List<Post>,
     modifier: Modifier,
-    forecastTimeList: List<Int>
+    forecastTimeList: List<Int>?
 ) {
+    val startStationIdx = line.startStationIdx
+    val endStationIdx = line.endStationIdx
+    val subStationList by remember { mutableStateOf(line.stations.subList(startStationIdx, endStationIdx+1)) }
+    val subForecastTimeList = forecastTimeList?.subList(startStationIdx, endStationIdx+1)?.toList()
+
     var currPostIdx by remember { mutableStateOf(0) }
     LaunchedEffect(key1 = true) {
         while (currPostIdx < postList.size) {
-            delay(postList[currPostIdx].duration.toLong())
+            delay(postList[currPostIdx].postMillis.toLong())
             currPostIdx++
         }
     }
     if (currPostIdx < postList.size) {
         Row(modifier) {
-            VerticalStationLazyColumn(line, currIdx, Modifier.weight(3f), forecastTimeList)
-            PostBar(postList[currPostIdx], line, currIdx, Modifier.weight(2f))
+            VerticalStationLazyColumn(Modifier.weight(3f), currIdx - startStationIdx, subStationList, subForecastTimeList, line.otherLineColors)
+            PostBar(postList[currPostIdx], Modifier.weight(2f))
         }
     } else {
         Box(modifier) {
-            HorizontalStationListColumn(line, stationStates, forecastTimeList)
+            HorizontalStationListColumn(currIdx - startStationIdx, subStationList, subForecastTimeList, line.otherLineColors)
             IllustrationBar(Modifier.align(Alignment.BottomStart))
         }
     }
@@ -109,21 +153,23 @@ fun StationListUI(
 
 @Composable
 fun VerticalStationLazyColumn(
-    line: LineInfo,
-    currIdx: Int,
     modifier: Modifier,
-    forecastTimeList: List<Int>
+    subCurrIdx: Int,
+    subStationList: List<Station>,
+    subForecastTimeList: List<Int>?,
+    otherLineColors: Map<String, Color>
 ) {
+    var listStartIdx by remember { mutableStateOf(subCurrIdx) }
     val lazyColumnState = rememberLazyListState()
-    var startIdx by remember { mutableStateOf(currIdx) }
 
     // 循环滚动站点列表
-    LaunchedEffect(currIdx) {
+    LaunchedEffect(subCurrIdx) {
+        listStartIdx = subCurrIdx
         while (true) {
-            lazyColumnState.scrollToItem(startIdx)
+            lazyColumnState.scrollToItem(listStartIdx)
             delay(SCROLL_DURATION)
-            startIdx += SWITCH_ITEM_COUNT
-            if (startIdx > line.endStationIdx) startIdx = currIdx
+            listStartIdx += SWITCH_ITEMS
+            if (listStartIdx > subStationList.size) listStartIdx = subCurrIdx
         }
     }
 
@@ -133,7 +179,7 @@ fun VerticalStationLazyColumn(
         contentPadding = PaddingValues(10.dp),
         userScrollEnabled = false
     ) {
-        itemsIndexed(line.stations) { index, station ->
+        itemsIndexed(subStationList) { index, station ->
             Row(modifier.height(80.dp)) {
                 Row(
                     Modifier
@@ -141,14 +187,13 @@ fun VerticalStationLazyColumn(
                         .align(Alignment.CenterVertically),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    val diff = (index - currIdx) + 1
-                    if (forecastTimeList.isNotEmpty())Text(text = "${forecastTimeList[currIdx]}分钟")
-                    Text(text = "${diff}站", Modifier.padding(horizontal = 4.dp))
+                    if (subForecastTimeList != null && index>=subCurrIdx && subForecastTimeList[index]!=0)Text(text = "${subForecastTimeList[index]/60}分钟")
+                    Text(text = "${(index - subCurrIdx) + 1}站", Modifier.padding(horizontal = 4.dp))
                 }
                 Row(Modifier.weight(5f), verticalAlignment = Alignment.CenterVertically) {
                     val stationStatus = when {
-                        index == currIdx -> StationStatus.CURR
-                        index > currIdx -> StationStatus.UNREACHED
+                        index == subCurrIdx -> StationStatus.CURR
+                        index > subCurrIdx -> StationStatus.UNREACHED
                         else -> StationStatus.ARRIVED
                     }
                     VerticalStationIndicator(stationStatus)
@@ -160,7 +205,7 @@ fun VerticalStationLazyColumn(
                         for (interchange in it) {
                             MetroIndicator(
                                 text = interchange,
-                                bgColor = line.getLineColor(interchange)
+                                bgColor = otherLineColors[interchange] ?: gray
                             )
                         }
                     }
@@ -171,7 +216,7 @@ fun VerticalStationLazyColumn(
 }
 
 @Composable
-fun PostBar(post: Post, line: LineInfo, currIdx: Int, modifier: Modifier) {
+fun PostBar(post: Post, modifier: Modifier) {
     Column(modifier) {
         Card(
             modifier = Modifier
@@ -180,38 +225,7 @@ fun PostBar(post: Post, line: LineInfo, currIdx: Int, modifier: Modifier) {
                 .padding(10.dp),
             border = BorderStroke(2.dp, dark_gray_100)
         ) {
-            when (post) {
-                is NormalPost -> {
-                    Text(text = post.content, style = MaterialTheme.typography.h5)
-                }
-                is StationPost -> {
-                    val stationText = if (line.startStationIdx < currIdx
-                        && currIdx < line.endStationIdx
-                        && currIdx < post.stationIdxBefore
-                    ) {
-                        line.stations[post.stationIdxBefore].name
-                    } else if (currIdx == post.stationIdxBefore) {
-                        "本站"
-                    } else null
-
-                    stationText?.let {
-                        Column {
-                            Text(
-                                text = "前往${post.content}的乘客可在",
-                                style = MaterialTheme.typography.h5
-                            )
-                            Row {
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.h4,
-                                    color = golden_800
-                                )
-                                Text(text = "下车", style = MaterialTheme.typography.h5)
-                            }
-                        }
-                    }
-                }
-            }
+            Text(text = post.content, style = MaterialTheme.typography.h5)
         }
         IllustrationBar(
             Modifier
@@ -223,9 +237,10 @@ fun PostBar(post: Post, line: LineInfo, currIdx: Int, modifier: Modifier) {
 
 @Composable
 private fun HorizontalStationListColumn(
-    line: LineInfo,
-    stationStates: List<StationStatus>,
-    forecastTimeList: List<Int>
+    subCurrIdx: Int,
+    subStationList: List<Station>,
+    subForecastTimeList: List<Int>?,
+    otherLineColors: Map<String, Color>
 ) {
     var modeCn by remember { mutableStateOf(true) }
     var shine by remember { mutableStateOf(true) }
@@ -243,16 +258,18 @@ private fun HorizontalStationListColumn(
             }
         }
     }
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         drawIntoCanvas { canvas ->
             drawHorizontalLineMap(
                 canvas.nativeCanvas,
-                line,
-                stationStates,
+                subStationList,
+                subCurrIdx,
                 modeCn,
                 size,
                 shine,
-                forecastTimeList
+                subForecastTimeList,
+                otherLineColors
             )
         }
     }

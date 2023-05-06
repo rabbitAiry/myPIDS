@@ -1,53 +1,41 @@
 package com.airy.buspids.data
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.setValue
 import com.airy.pids_lib.data.LineInfo
 import com.airy.pids_lib.data.PidsStatus
-import com.airy.pids_lib.data.StationStatus
-import com.airy.pids_lib.ui.gray
 
 data class LineState(
     val lineInfo: LineInfo,
-    var currIdx: MutableState<Int> = mutableStateOf(lineInfo.startStationIdx),
-    var pidsStatus: MutableState<PidsStatus> = mutableStateOf(PidsStatus.BUS_STATION_ARRIVED),
-    val stationStates: MutableList<StationStatus> = MutableList(lineInfo.stations.size) { idx ->
-        when {
-            idx > currIdx.value -> StationStatus.UNREACHED
-            idx == currIdx.value -> StationStatus.CURR
-            else -> StationStatus.ARRIVED
-        }
-    }
 ) {
+    var currIdx: Int by mutableStateOf(lineInfo.startStationIdx)
+    var pidsStatus: PidsStatus by mutableStateOf(PidsStatus.BUS_STATION_ARRIVED)
+
     val stations get() = lineInfo.stations
     val firstStation = stations[lineInfo.startStationIdx]
     val lastStation = stations[lineInfo.endStationIdx]
-    val currStation get() = stations[currIdx.value]
-    val nextStation get() = stations[currIdx.value + 1]
+    val currStation get() = stations[currIdx]
+    val nextStation get() = if (currIdx >= lineInfo.endStationIdx) null else stations[currIdx + 1]
 
-    fun isLastStation(): Boolean = currIdx.value == stations.size - 1
+    fun isLastStation(): Boolean = currIdx == lineInfo.endStationIdx
 
     operator fun get(num: Int) = stations[num]
 
     fun goNextStation(): LineState {
         if (!isLastStation()) {
-            currIdx.value++
-            stationStates[currIdx.value] = StationStatus.CURR
-            stationStates[currIdx.value - 1] = StationStatus.ARRIVED
+            currIdx++
         }
         return this
     }
 
     fun stationArrived(): LineState {
-        pidsStatus.value = PidsStatus.BUS_STATION_ARRIVED
+        pidsStatus = PidsStatus.BUS_STATION_ARRIVED
         return this
     }
 
     fun busRun(): LineState {
-        pidsStatus.value = PidsStatus.BUS_RUNNING
+        pidsStatus = PidsStatus.BUS_RUNNING
         return this
     }
 }

@@ -36,6 +36,8 @@ private const val TAG = "LineRepository"
 
 @Singleton
 class LineRepository @Inject constructor() {
+    var lineId = ""
+
     private var _line: LineInfo? = null
     val line: LineInfo
         get() = _line!!
@@ -50,6 +52,7 @@ class LineRepository @Inject constructor() {
 
     suspend fun searchLine(cityText: String, uid: String, range: IntRange): LineInfo? {
         if (_line != null) return _line
+        lineId = uid
         return withContext(Dispatchers.IO) {
             val url = getLineSearchUrl(cityText, uid)
             try {

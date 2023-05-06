@@ -18,9 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TitleCard(title: String, content: @Composable () -> Unit) {
+fun TitleCard(title: String, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Card(
-        Modifier
+        modifier
             .fillMaxWidth()
             .padding(bottom = 20.dp), shape = RoundedCornerShape(10.dp),
         elevation = 10.dp
